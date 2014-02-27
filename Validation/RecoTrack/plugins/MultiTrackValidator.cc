@@ -340,7 +340,8 @@ void MultiTrackValidator::analyze(const edm::Event& event, const edm::EventSetup
             }
         }
 
-          histoProducerAlgo_->fill_recoAssociated_simTrack_histos(w,*tp,momentumTP,vertexTP,dxySim,dzSim,nSimHits,matchedTrackPointer,puinfo.getPU_NumInteractions(), vtx_z_PU);
+	//histoProducerAlgo_->fill_recoAssociated_simTrack_histos(w,*tp,momentumTP,vertexTP,dxySim,dzSim,nSimHits,matchedTrackPointer,puinfo.getPU_NumInteractions(), vtx_z_PU);
+	histoProducerAlgo_->fill_recoAssociated_simTrack_histos(w,*tp,momentumTP,vertexTP,dxySim,dzSim,nSimHits,matchedTrackPointer,puinfo.getPU_NumInteractions(), vtx_z_PU, TPCollectionHeff, rt.size());
           sts++;
           if (matchedTrackPointer) asts++;
 
@@ -467,7 +468,7 @@ void MultiTrackValidator::analyze(const edm::Event& event, const edm::EventSetup
 	int chargeTP = tpr->charge();
 
 	histoProducerAlgo_->fill_ResoAndPull_recoTrack_histos(w,momentumTP,vertexTP,chargeTP,
-							     *track,bs.position());
+							      *track,bs.position(),trackCollection);
 
 
 	//TO BE FIXED

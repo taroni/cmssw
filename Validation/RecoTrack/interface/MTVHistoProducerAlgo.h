@@ -47,6 +47,14 @@ class MTVHistoProducerAlgo{
 						   double dxy, double dz, int nSimHits,
 						   const reco::Track* track,
 						   int numVertices, double vertz)=0;
+ virtual void fill_recoAssociated_simTrack_histos(int count,
+						   const TrackingParticle& tp,
+						   const TrackingParticle::Vector& momentumTP, const TrackingParticle::Point& vertexTP,
+						   double dxy, double dz, int nSimHits,
+						   const reco::Track* track,
+						   int numVertices, double vertz,
+						   edm::Handle<TrackingParticleCollection>  TPCollectionHeff, unsigned int tpsize)=0;
+
 
   virtual void fill_recoAssociated_simTrack_histos(int count,
 						   const reco::GenParticle& tp,
@@ -66,6 +74,19 @@ class MTVHistoProducerAlgo{
                          		     int tpbunchcrossing,
 				             int nSimHits,
    					     double sharedFraction)=0;
+ virtual void fill_generic_recoTrack_histos(int count,
+				     	     const reco::Track& track,
+				     	     const math::XYZPoint& bsPosition,
+				     	     bool isMatched,
+				     	     bool isSigMatched,
+				     	     bool isChargeMatched,
+					     int numAssocRecoTracks,
+                         	             int numVertices,
+                         		     int tpbunchcrossing,
+				             int nSimHits,
+   					     double sharedFraction,
+					     edm::Handle<edm::View<reco::Track> > trackCollection, unsigned int tpsize)=0;
+
 
   virtual void fill_dedx_recoTrack_histos(int count, edm::RefToBase<reco::Track>& trackref,const std::vector< edm::ValueMap<reco::DeDxData> >& v_dEdx)=0;
   //  virtual void fill_dedx_recoTrack_histos(reco::TrackRef trackref, std::vector< edm::ValueMap<reco::DeDxData> > v_dEdx)=0;
@@ -77,6 +98,14 @@ class MTVHistoProducerAlgo{
 		 	      	      int assTracks,
 			      	      int numRecoTracks,
 			      	      int numSimTracks)=0;
+
+  virtual void fill_ResoAndPull_recoTrack_histos(int count,
+						 const TrackingParticle::Vector& momentumTP,
+						 const TrackingParticle::Point& vertexTP,
+						 int chargeTP,
+						 const reco::Track& track,
+						 const math::XYZPoint& bsPosition,
+						 edm::Handle<edm::View<reco::Track> >  trackCollection)=0;
 
   virtual void fill_ResoAndPull_recoTrack_histos(int count,
 						 const TrackingParticle::Vector& momentumTP,
