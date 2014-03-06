@@ -162,7 +162,7 @@ MTVHistoProducerAlgoForTracker::~MTVHistoProducerAlgoForTracker(){
   delete TpSelectorForEfficiencyVsPt;
   delete TpSelectorForEfficiencyVsVTXR;
   delete TpSelectorForEfficiencyVsVTXZ;
-  delete TpSelectorForEfficiencyVsdR;
+   delete TpSelectorForEfficiencyVsdR;
 
   delete generalGpSelector;
   delete GpSelectorForEfficiencyVsEta;
@@ -183,7 +183,7 @@ void MTVHistoProducerAlgoForTracker::setUpVectors(){
   std::vector<double> vertposintervalsv;
   std::vector<double> zposintervalsv;
   std::vector<double> vertcountintervalsv;
-  std::vector<double> dRintervalsv;
+//   std::vector<double> dRintervalsv;
 
   std::vector<int>    totSIMveta,totASSveta,totASS2veta,totloopveta,totmisidveta,totASS2vetaSig,totRECveta;
   std::vector<int>    totSIMvpT,totASSvpT,totASS2vpT,totRECvpT,totloopvpT,totmisidvpT;
@@ -196,6 +196,24 @@ void MTVHistoProducerAlgoForTracker::setUpVectors(){
   std::vector<int>    totSIMv_vertcount,totASSv_vertcount,totRECv_vertcount,totASS2v_vertcount;
   std::vector<int>    totRECv_algo;
   std::vector<int>    totSIMvdR,totASSvdR, totASS2vdR, totRECvdR;
+
+  double stepdR = (maxdR-mindR)/nintdR;
+  dRintervalsv.push_back(mindR);
+  for (int k=1;k<nintdR+1;k++) {
+    double d=0;
+    d=mindR+k*stepdR;
+    dRintervalsv.push_back(d);
+    totSIMvdR.push_back(0);
+    totASSvdR.push_back(0);
+    totRECvdR.push_back(0);
+    totASS2vdR.push_back(0);
+  }
+  dRintervals.push_back(dRintervalsv);
+  totSIMdR.push_back(totSIMvdR);
+  totASSdR.push_back(totASSvdR);
+  totRECdR.push_back(totRECvdR);
+  totASS2dR.push_back(totASS2vdR);
+
 
   double step=(maxEta-minEta)/nintEta;
   //std::ostringstream title,name; ///BM, what is this?
@@ -252,23 +270,6 @@ void MTVHistoProducerAlgoForTracker::setUpVectors(){
   totRECpT.push_back(totRECvpT);
   totlooppT.push_back(totloopvpT);
   totmisidpT.push_back(totmisidvpT);
-
-  double stepdR = (maxdR-mindR)/nintdR;
-  dRintervalsv.push_back(mindR);
-  for (int k=1;k<nintdR+1;k++) {
-    double d=0;
-    d=mindR+k*stepdR;
-    dRintervalsv.push_back(d);
-    totSIMvdR.push_back(0);
-    totASSvdR.push_back(0);
-    totRECvdR.push_back(0);
-    totASS2vdR.push_back(0);
-  }
-  dRintervals.push_back(dRintervalsv);
-  totSIMdR.push_back(totSIMvdR);
-  totASSdR.push_back(totASSvdR);
-  totRECdR.push_back(totRECvdR);
-  totASS2dR.push_back(totASS2vdR);
 
 
   for (int k=1;k<nintHit+1;k++) {
@@ -512,7 +513,7 @@ void MTVHistoProducerAlgoForTracker::bookRecoHistos(){
   //dz vs dR
   dzres_vs_dR.push_back(dbe_->book2D("dzres_vs_dR","dzres_vs_dR",nintdR,mindR,maxdR,dzRes_nbin, dzRes_rangeMin, dzRes_rangeMax));
   h_dzmeanhdR.push_back( dbe_->book1D("dzres_vs_dR_Mean","mean of dzres vs dR",nintdR,mindR,maxdR) );
-  h_dzrmshdR.push_back( dbe_->book1D("dzres_vs_dR_Sigma","#sigma(#deltadz vs dR",nintdR,mindR,maxdR) );
+  h_dzrmshdR.push_back( dbe_->book1D("dzres_vs_dR_Sigma","#sigma(#deltadz vs dR)",nintdR,mindR,maxdR) );
 
 
   h_assocvertpos.push_back( dbe_->book1D("num_assoc(simToReco)_vertpos",
@@ -1063,6 +1064,34 @@ void MTVHistoProducerAlgoForTracker::fill_recoAssociated_simTrack_histos(int cou
 									 int numVertices, double vertz,
 									 edm::Handle<std::vector<TrackingParticle> > TPCollectionHeff, unsigned int rtsize){
   bool isMatched = track;
+  const TrackingParticleCollection tPCeff = *(TPCollectionHeff.product());
+  double calcdR = 10;  // calcdR will be the smallest dR in the event //
+  if ((*TpSelectorForEfficiencyVsdR)(tp)){
+    for (TrackingParticleCollection::size_type s=0;s<tPCeff.size();s++){
+      TrackingParticleRef myTpr(TPCollectionHeff,s);
+      TrackingParticle *myTp = const_cast<TrackingParticle*>(myTpr.get());
+      //     if ((&*myTp) == (&tp)) continue
+      // do not calculate the angle between the same tracks
+      if ((*TpSelectorForEfficiencyVsdR)(*myTp)){
+ 	// continue;
+ 	if (&*myTp == &tp) continue; 
+ 	double dtheta = tp.momentum().theta() - myTp->momentum().theta();
+ 	double dphi = tp.momentum().phi() - myTp->momentum().phi();
+ 	double jangle = sqrt(dtheta*dtheta+dphi*dphi);
+ 	if (jangle<calcdR) calcdR=jangle;
+      }
+      
+      for (unsigned int f=0; f<dRintervals[count].size()-1; f++){
+ 	if (calcdR>dRintervals[count][f]&&
+ 	    calcdR<=dRintervals[count][f+1]) {
+ 	  totSIMdR[count][f]++;
+ 	  if (rtsize!=0) {
+ 	    totASSdR[count][f]++;
+ 	  }
+ 	}
+      }
+    }
+  }  
 
   if((*TpSelectorForEfficiencyVsEta)(tp)){
     //effic vs hits
@@ -1138,6 +1167,7 @@ void MTVHistoProducerAlgoForTracker::fill_recoAssociated_simTrack_histos(int cou
       }
     } // END for (unsigned int f=0; f<pTintervals[count].size()-1; f++){
   }
+
 
   if((*TpSelectorForEfficiencyVsVTXR)(tp)){
     for (unsigned int f=0; f<dxyintervals[count].size()-1; f++){
@@ -1401,6 +1431,27 @@ void MTVHistoProducerAlgoForTracker::fill_generic_recoTrack_histos(int count,
 								   double sharedFraction, edm::Handle<edm::View<reco::Track> >  trackCollection , unsigned int tpsize){
 
   //Fill track algo histogram
+  double calcdR = 10;  // calcdR will be the smallest dR in the event //
+  for (edm::View<reco::Track>::size_type s=0;s<trackCollection->size();s++){
+    edm::RefToBase<reco::Track> myTrack(trackCollection, s);
+     // continue;
+    if (&*myTrack == &track) continue; 
+    double dtheta = track.momentum().theta() - myTrack->momentum().theta();
+    double dphi = track.momentum().phi() - myTrack->momentum().phi();
+     double jangle = sqrt(dtheta*dtheta+dphi*dphi);
+     if (jangle<calcdR) calcdR=jangle;
+  }
+  
+  for (unsigned int f=0; f<dRintervals[count].size()-1; f++){
+    if (calcdR>dRintervals[count][f]&&
+ 	calcdR<=dRintervals[count][f+1]) {
+      totRECdR[count][f]++;
+      if (tpsize!=0) {
+ 	totASS2dR[count][f]++;
+      }
+    }
+  }
+
 
   if (track.algo()>=4 && track.algo()<=14) totREC_algo[count][track.algo()-4]++;
   int sharedHits = sharedFraction *  track.numberOfValidHits();
@@ -1451,26 +1502,6 @@ void MTVHistoProducerAlgoForTracker::fill_generic_recoTrack_histos(int count,
       }
     }
   } // End for (unsigned int f=0; f<pTintervals[count].size()-1; f++){
-  double calcdR = 10;  // calcdR will be the smallest dR in the event //
-  for (edm::View<reco::Track>::size_type s=0;s<trackCollection->size();s++){
-    edm::RefToBase<reco::Track> myTrack(trackCollection, s);
-     // continue;
-    if (&*myTrack == &track) continue; 
-    double dtheta = track.momentum().theta() - myTrack->momentum().theta();
-    double dphi = track.momentum().phi() - myTrack->momentum().phi();
-     double jangle = sqrt(dtheta*dtheta+dphi*dphi);
-     if (jangle<calcdR) calcdR=jangle;
-  }
-  
-  for (unsigned int f=0; f<dRintervals[count].size()-1; f++){
-    if (calcdR>dRintervals[count][f]&&
- 	calcdR<=dRintervals[count][f+1]) {
-      totRECdR[count][f]++;
-      if (tpsize!=0) {
- 	totASS2dR[count][f]++;
-      }
-    }
-  }
  
   for (unsigned int f=0; f<dxyintervals[count].size()-1; f++){
     if (track.dxy(bsPosition)>dxyintervals[count][f]&&
@@ -1787,6 +1818,7 @@ void MTVHistoProducerAlgoForTracker::fill_ResoAndPull_recoTrack_histos(int count
     * momentumTP.z()/sqrt(momentumTP.perp2());
 
 
+
   //  reco::Track::ParameterVector rParameters = track.parameters(); // UNUSED
 
   double qoverpRec(0);
@@ -1829,6 +1861,25 @@ void MTVHistoProducerAlgoForTracker::fill_ResoAndPull_recoTrack_histos(int count
 
   double dxyRec    = track.dxy(bsPosition);
   double dzRec     = track.dz(bsPosition);
+  double calcdR = 10;  // calcdR will be the smallest dR in the event //
+  for (edm::View<reco::Track>::size_type s=0;s<trackCollection->size();s++){
+    edm::RefToBase<reco::Track> myTrack(trackCollection, s);
+    // continue;
+    if (&*myTrack == &track) continue; 
+    double dtheta = track.momentum().theta() - myTrack->momentum().theta();
+    double dphi = track.momentum().phi() - myTrack->momentum().phi();
+    double jangle = sqrt(dtheta*dtheta+dphi*dphi);
+    if (jangle<calcdR) calcdR=jangle;
+   }
+  
+   
+   
+  dxyres_vs_dR[count]->Fill(calcdR,dxyRec-dxySim);
+  ptres_vs_dR[count]->Fill(calcdR,(track.pt()-sqrt(momentumTP.perp2()))/ptRec);
+  dzres_vs_dR[count]->Fill(calcdR,dzRec-dzSim);
+  phires_vs_dR[count]->Fill(calcdR,phiRec-phiSim);
+  cotThetares_vs_dR[count]->Fill(calcdR,1/tan(1.570796326794896558-lambdaRec)-1/tan(1.570796326794896558-lambdaSim));        
+
 
   // eta residue; pt, k, theta, phi, dxy, dz pulls
   double qoverpPull=(qoverpRec-qoverpSim)/qoverpErrorRec;
@@ -1878,24 +1929,6 @@ void MTVHistoProducerAlgoForTracker::fill_ResoAndPull_recoTrack_histos(int count
   //etares_vs_eta[count]->Fill(getEta(track.eta()),etares);
   etares_vs_eta[count]->Fill(getEta(momentumTP.eta()),etares);
 
-  double calcdR = 10;  // calcdR will be the smallest dR in the event //
-  for (edm::View<reco::Track>::size_type s=0;s<trackCollection->size();s++){
-    edm::RefToBase<reco::Track> myTrack(trackCollection, s);
-    // continue;
-    if (&*myTrack == &track) continue; 
-    double dtheta = track.momentum().theta() - myTrack->momentum().theta();
-    double dphi = track.momentum().phi() - myTrack->momentum().phi();
-    double jangle = sqrt(dtheta*dtheta+dphi*dphi);
-    if (jangle<calcdR) calcdR=jangle;
-   }
-  
-   
-   
-  dxyres_vs_dR[count]->Fill(calcdR,dxyRec-dxySim);
-  ptres_vs_dR[count]->Fill(calcdR,(track.pt()-sqrt(momentumTP.perp2()))/ptRec);
-  dzres_vs_dR[count]->Fill(calcdR,dzRec-dzSim);
-  phires_vs_dR[count]->Fill(calcdR,phiRec-phiSim);
-  cotThetares_vs_dR[count]->Fill(calcdR,1/tan(1.570796326794896558-lambdaRec)-1/tan(1.570796326794896558-lambdaSim));        
 
 
   /*
