@@ -23,6 +23,7 @@
 
 #ifndef SI_PIXEL_TEMPLATE_STANDALONE
 #include "CondFormats/SiPixelObjects/interface/SiPixelTemplateDBObject.h"
+#include "CondFormats/SiPixelObjects/interface/SiPixel2DTemplateDBObject.h"
 #include "FWCore/Utilities/interface/Exception.h"
 #endif
 
@@ -109,7 +110,8 @@ class SiPixelTemplate2D {
                                   // file with the index (int) filenum
 								  
 #ifndef SI_PIXEL_TEMPLATE_STANDALONE
-  bool pushfile(const SiPixelTemplateDBObject& dbobject);     // load the private store with info from db
+  //bool pushfile(const SiPixelTemplateDBObject& dbobject);     // load the private store with info from db
+  bool pushfile(const SiPixel2DTemplateDBObject& dbobject);     // load the private store with info from db
 #endif
   
 	

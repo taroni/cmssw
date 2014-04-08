@@ -28,12 +28,12 @@ class StripCPEfromTemplate : public StripCPE
     template_reco_speed( conf.getParameter<int>("TemplateRecoSpeed") ),
     use_strip_split_cluster_errors( conf.getParameter<bool>("UseStripSplitClusterErrors") )
     {
-      templ.pushfile( 11 );
-      templ.pushfile( 12 );
-      templ.pushfile( 13 );
-      templ.pushfile( 14 );
-      templ.pushfile( 15 );
-      templ.pushfile( 16 );
+      templ.pushfile( SID + 1 );
+      templ.pushfile( SID + 2 );
+      templ.pushfile( SID + 3 );
+      templ.pushfile( SID + 4 );
+      templ.pushfile( SID + 5 );
+      templ.pushfile( SID + 6 );
 
       //cout << "STRIPS: (int)use_template_reco = " << (int)use_template_reco << endl;
       //cout << "template_reco_speed    = " << template_reco_speed    << endl;
@@ -43,7 +43,7 @@ class StripCPEfromTemplate : public StripCPE
  private:
 
   mutable SiStripTemplate templ;
- 
+  int SID;
   bool use_template_reco;
   int template_reco_speed;
   bool use_strip_split_cluster_errors;
