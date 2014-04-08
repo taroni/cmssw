@@ -28,12 +28,12 @@ class StripCPEfromTemplate : public StripCPE
     template_reco_speed( conf.getParameter<int>("TemplateRecoSpeed") ),
     use_strip_split_cluster_errors( conf.getParameter<bool>("UseStripSplitClusterErrors") )
     {
-      SiStripTemplate::pushfile( 11, theStripTemp_ );
-      SiStripTemplate::pushfile( 12, theStripTemp_ );
-      SiStripTemplate::pushfile( 13, theStripTemp_ );
-      SiStripTemplate::pushfile( 14, theStripTemp_ );
-      SiStripTemplate::pushfile( 15, theStripTemp_ );
-      SiStripTemplate::pushfile( 16, theStripTemp_ );
+      SiStripTemplate::pushfile(  SID + 1, theStripTemp_ );
+      SiStripTemplate::pushfile(  SID + 2, theStripTemp_ );
+      SiStripTemplate::pushfile(  SID + 3, theStripTemp_ );
+      SiStripTemplate::pushfile(  SID + 4, theStripTemp_ );
+      SiStripTemplate::pushfile(  SID + 5, theStripTemp_ );
+      SiStripTemplate::pushfile(  SID + 6, theStripTemp_ );
 
       //cout << "STRIPS: (int)use_template_reco = " << (int)use_template_reco << endl;
       //cout << "template_reco_speed    = " << template_reco_speed    << endl;
@@ -43,7 +43,7 @@ class StripCPEfromTemplate : public StripCPE
  private:
 
   std::vector< SiStripTemplateStore > theStripTemp_;
- 
+  int SID;
   bool use_template_reco;
   int template_reco_speed;
   bool use_strip_split_cluster_errors;

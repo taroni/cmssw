@@ -9,14 +9,21 @@
 #include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 
+#include "DataFormats/DetId/interface/DetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
+
 #include <fstream>
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
 
 SiPixelTemplateDBObjectUploader::SiPixelTemplateDBObjectUploader(const edm::ParameterSet& iConfig):
 	theTemplateCalibrations( iConfig.getParameter<vstring>("siPixelTemplateCalibrations") ),
 	theTemplateBaseString( iConfig.getParameter<std::string>("theTemplateBaseString") ),
 	theVersion( iConfig.getParameter<double>("Version") ),
 	theMagField( iConfig.getParameter<double>("MagField") ),
-	theDetIds( iConfig.getParameter<std::vector<uint32_t> >("detIds") ),
 	theTemplIds( iConfig.getParameter<std::vector<uint32_t> >("templateIds") )
 {
 }
@@ -56,7 +63,8 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 		std::ifstream in_file(tempfile, std::ios::in);
 			
 		if(in_file.is_open()){
-			edm::LogInfo("Template Info") << "Opened Template File: " << file.fullPath().c_str();
+			//edm::LogInfo("Template Info") << "Opened Template File: " << file.fullPath().c_str();
+			cout << "Opened Template File: " << file.fullPath().c_str() << "\n";
 
 			// Local variables 
 			char title_char[80], c;
@@ -92,7 +100,8 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 		}
 		else {
 			// If file didn't open, report this
-			edm::LogError("SiPixelTemplateDBObjectUploader") << "Error opening File" << tempfile;
+			//edm::LogError("SiPixelTemplateDBObjectUploader") << "Error opening File" << tempfile;
+			cout << "Error opening File " << tempfile << "\n";
 		}
 	}
 	
@@ -127,18 +136,10 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 					if ( ! (*obj).putTemplateID( detid.rawId(),templid ) )
 						edm::LogInfo("Template Info") << " Could not fill endcap det unit";
 				}
-			}
-			else {
-				//edm::LogInfo("Template Info")<< "Detid is Pixel but neither bpix nor fpix";
+				
 			}
 		}
 	}
-	
-	// Uncomment to output the contents of the db object at the end of the job
-	//	std::cout << *obj << std::endl;
-	//std::map<unsigned int,short> templMap=(*obj).getTemplateIDs();
-	//for(std::map<unsigned int,short>::const_iterator it=templMap.begin(); it!=templMap.end();++it)
-		//std::cout<< "Map:\n"<< "DetId: "<< it->first << " TemplateID: "<< it->second <<"\n";
 
 	//--- Create a new IOV
 	edm::Service<cond::service::PoolDBOutputService> poolDbService;
@@ -150,8 +151,7 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 		poolDbService->writeOne( obj, poolDbService->currentTime(), "SiPixelTemplateDBObjectRcd");
 }
 
-void 
-SiPixelTemplateDBObjectUploader::endJob()
+void SiPixelTemplateDBObjectUploader::endJob()
 {
 }
 

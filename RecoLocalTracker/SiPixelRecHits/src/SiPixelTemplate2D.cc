@@ -223,6 +223,7 @@ bool SiPixelTemplate2D::pushfile(int filenum, std::vector< SiPixelTemplateStore2
 //! \param dbobject - db storing multiple template calibrations
 //**************************************************************** 
 bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::vector< SiPixelTemplateStore2D > & thePixelTemp_)
+
 {
 	// Add template stored in external dbobject to theTemplateStore
     
@@ -232,7 +233,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 	const int code_version={16};
 	
 	// We must create a new object because dbobject must be a const and our stream must not be
-	SiPixelTemplateDBObject db = dbobject;
+	SiPixel2DTemplateDBObject db = dbobject;
 	
 	// Create a local template storage entry
 	SiPixelTemplateStore2D theCurrentTemp;
@@ -243,7 +244,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 		
 		// Read-in a header string first and print it    
 		
-		SiPixelTemplateDBObject::char2float temp;
+		SiPixel2DTemplateDBObject::char2float temp;
 		for (i=0; i<20; ++i) {
 			temp.f = db.sVector()[db.index()];
 			theCurrentTemp.head.title[4*i] = temp.c[0];
@@ -253,7 +254,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 			db.incrementIndex(1);
 		}
 		theCurrentTemp.head.title[79] = '\0';
-		LOGINFO("SiPixelTemplate2D") << "Loading Pixel Template File - " << theCurrentTemp.head.title << ENDL;
+		LOGINFO("SiPixel2DTemplate2D") << "Loading Pixel Template File - " << theCurrentTemp.head.title << ENDL;
 		
 		// next, the header information     
 		
@@ -261,18 +262,18 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 		>> theCurrentTemp.head.Dtype >> theCurrentTemp.head.Vbias >> theCurrentTemp.head.temperature >> theCurrentTemp.head.fluence >> theCurrentTemp.head.qscale
 		>> theCurrentTemp.head.s50 >> theCurrentTemp.head.lorywidth >> theCurrentTemp.head.lorxwidth >> theCurrentTemp.head.ysize >> theCurrentTemp.head.xsize >> theCurrentTemp.head.zsize;
 		
-		if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file, no template load" << ENDL; return false;}
+		if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file, no template load" << ENDL; return false;}
 		
-		LOGINFO("SiPixelTemplate2D") << "Template ID = " << theCurrentTemp.head.ID << ", Template Version " << theCurrentTemp.head.templ_version << ", Bfield = " << theCurrentTemp.head.Bfield 
+		LOGINFO("SiPixel2DTemplate2D") << "Template ID = " << theCurrentTemp.head.ID << ", Template Version " << theCurrentTemp.head.templ_version << ", Bfield = " << theCurrentTemp.head.Bfield 
 		<< ", NTy = " << theCurrentTemp.head.NTy << ", NTyx = " << theCurrentTemp.head.NTyx<< ", NTxx = " << theCurrentTemp.head.NTxx << ", Dtype = " << theCurrentTemp.head.Dtype
 		<< ", Bias voltage " << theCurrentTemp.head.Vbias << ", temperature "
 		<< theCurrentTemp.head.temperature << ", fluence " << theCurrentTemp.head.fluence << ", Q-scaling factor " << theCurrentTemp.head.qscale
 		<< ", 1/2 threshold " << theCurrentTemp.head.s50 << ", y Lorentz Width " << theCurrentTemp.head.lorywidth << ", x Lorentz width " << theCurrentTemp.head.lorxwidth    
 		<< ", pixel x-size " << theCurrentTemp.head.xsize << ", y-size " << theCurrentTemp.head.ysize << ", zsize " << theCurrentTemp.head.zsize << ENDL;
 		
-		if(theCurrentTemp.head.templ_version != code_version) {LOGERROR("SiPixelTemplate2D") << "code expects version " << code_version << ", no template load" << ENDL; return false;}
+		if(theCurrentTemp.head.templ_version != code_version) {LOGERROR("SiPixel2DTemplate2D") << "code expects version " << code_version << ", no template load" << ENDL; return false;}
 		
-		if(theCurrentTemp.head.NTy != 0) {LOGERROR("SiPixelTemplate2D") << "Trying to load 1-d template info into the 2-d template object, check your DB/global tag!" << ENDL; return false;}
+		if(theCurrentTemp.head.NTy != 0) {LOGERROR("SiPixel2DTemplate2D") << "Trying to load 1-d template info into the 2-d template object, check your DB/global tag!" << ENDL; return false;}
 		
 		// next, layout the 2-d structure needed to store template
 		
@@ -286,7 +287,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 				db >> theCurrentTemp.entry[iy][jx].runnum >> theCurrentTemp.entry[iy][jx].costrk[0] 
 				>> theCurrentTemp.entry[iy][jx].costrk[1] >> theCurrentTemp.entry[iy][jx].costrk[2]; 
 				
-				if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 1, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 1, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 				
 				// Calculate cot(alpha) and cot(beta) for this entry 
 				
@@ -297,14 +298,14 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 				db >> theCurrentTemp.entry[iy][jx].qavg >> theCurrentTemp.entry[iy][jx].pixmax >> theCurrentTemp.entry[iy][jx].sxymax >> theCurrentTemp.entry[iy][jx].iymin
 				>> theCurrentTemp.entry[iy][jx].iymax >> theCurrentTemp.entry[iy][jx].jxmin >> theCurrentTemp.entry[iy][jx].jxmax;
 				
-				if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 2, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 2, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 				
 				for (k=0; k<2; ++k) {
 					
 					db >> theCurrentTemp.entry[iy][jx].xypar[k][0] >> theCurrentTemp.entry[iy][jx].xypar[k][1] 
 					>> theCurrentTemp.entry[iy][jx].xypar[k][2] >> theCurrentTemp.entry[iy][jx].xypar[k][3] >> theCurrentTemp.entry[iy][jx].xypar[k][4];
 					
-					if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 3, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+					if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 3, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 					
 				}
 				
@@ -313,7 +314,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 					db >> theCurrentTemp.entry[iy][jx].lanpar[k][0] >> theCurrentTemp.entry[iy][jx].lanpar[k][1] 
 					>> theCurrentTemp.entry[iy][jx].lanpar[k][2] >> theCurrentTemp.entry[iy][jx].lanpar[k][3] >> theCurrentTemp.entry[iy][jx].lanpar[k][4];
 					
-					if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 4, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+					if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 4, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 					
 				}
 				
@@ -323,7 +324,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 							
 							for (i=0; i<T2YSIZE; ++i) {db >> theCurrentTemp.entry[iy][jx].xytemp[k][l][i][j];}
 							
-							if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 5, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+							if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 5, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 						}
 					}
 				}
@@ -333,19 +334,19 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 				>> theCurrentTemp.entry[iy][jx].chi2min[1] >> theCurrentTemp.entry[iy][jx].chi2avg[1]>> theCurrentTemp.entry[iy][jx].chi2min[2] >> theCurrentTemp.entry[iy][jx].chi2avg[2]
 				>> theCurrentTemp.entry[iy][jx].chi2min[3] >> theCurrentTemp.entry[iy][jx].chi2avg[3];
 				
-				if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 6, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 6, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 				
 			   db >> theCurrentTemp.entry[iy][jx].spare[0] >> theCurrentTemp.entry[iy][jx].spare[1] >> theCurrentTemp.entry[iy][jx].spare[2] >> theCurrentTemp.entry[iy][jx].spare[3]
 				>> theCurrentTemp.entry[iy][jx].spare[4] >> theCurrentTemp.entry[iy][jx].spare[5] >> theCurrentTemp.entry[iy][jx].spare[6] >> theCurrentTemp.entry[iy][jx].spare[7]
 				>> theCurrentTemp.entry[iy][jx].spare[8]  >> theCurrentTemp.entry[iy][jx].spare[9];
 				
-				if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 7, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 7, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 				
 			   db >> theCurrentTemp.entry[iy][jx].spare[10] >> theCurrentTemp.entry[iy][jx].spare[11] >> theCurrentTemp.entry[iy][jx].spare[12] >> theCurrentTemp.entry[iy][jx].spare[13]
 				>> theCurrentTemp.entry[iy][jx].spare[14] >> theCurrentTemp.entry[iy][jx].spare[15] >> theCurrentTemp.entry[iy][jx].spare[16] >> theCurrentTemp.entry[iy][jx].spare[17]
 				>> theCurrentTemp.entry[iy][jx].spare[18]  >> theCurrentTemp.entry[iy][jx].spare[19];
 				
-				if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 8, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 8, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 					
 				}
 			}
