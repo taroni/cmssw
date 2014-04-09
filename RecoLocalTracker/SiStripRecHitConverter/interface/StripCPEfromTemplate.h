@@ -26,6 +26,7 @@ class StripCPEfromTemplate : public StripCPE
     : StripCPE(conf, mag, geom, lorentz, backplaneCorrections, confObj, latency ),
     use_template_reco( conf.getParameter<bool>("UseTemplateReco") ),
     template_reco_speed( conf.getParameter<int>("TemplateRecoSpeed") ),
+    SID( conf.getParameter<int>("StripTemplateID")), 
     use_strip_split_cluster_errors( conf.getParameter<bool>("UseStripSplitClusterErrors") )
     {
       templ.pushfile( SID + 1 );
@@ -43,9 +44,9 @@ class StripCPEfromTemplate : public StripCPE
  private:
 
   mutable SiStripTemplate templ;
-  int SID;
   bool use_template_reco;
   int template_reco_speed;
+  int SID;
   bool use_strip_split_cluster_errors;
 
 };
