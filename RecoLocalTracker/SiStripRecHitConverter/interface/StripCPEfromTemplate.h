@@ -26,6 +26,7 @@ class StripCPEfromTemplate : public StripCPE
     : StripCPE(conf, mag, geom, lorentz, backplaneCorrections, confObj, latency ),
     use_template_reco( conf.getParameter<bool>("UseTemplateReco") ),
     template_reco_speed( conf.getParameter<int>("TemplateRecoSpeed") ),
+    SID( conf.getParameter<int>("StripTemplateID")), 
     use_strip_split_cluster_errors( conf.getParameter<bool>("UseStripSplitClusterErrors") )
     {
 
@@ -44,12 +45,11 @@ class StripCPEfromTemplate : public StripCPE
   
  private:
 
-
   std::vector< SiStripTemplateStore > theStripTemp_;
- 
 
   bool use_template_reco;
   int template_reco_speed;
+  int SID;
   bool use_strip_split_cluster_errors;
 
 };
