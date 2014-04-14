@@ -257,11 +257,10 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 		LOGINFO("SiPixel2DTemplate2D") << "Loading Pixel Template File - " << theCurrentTemp.head.title << ENDL;
 		
 		// next, the header information     
-		
+
 		db >> theCurrentTemp.head.ID  >> theCurrentTemp.head.templ_version >> theCurrentTemp.head.Bfield >> theCurrentTemp.head.NTy >> theCurrentTemp.head.NTyx >> theCurrentTemp.head.NTxx
 		>> theCurrentTemp.head.Dtype >> theCurrentTemp.head.Vbias >> theCurrentTemp.head.temperature >> theCurrentTemp.head.fluence >> theCurrentTemp.head.qscale
 		>> theCurrentTemp.head.s50 >> theCurrentTemp.head.lorywidth >> theCurrentTemp.head.lorxwidth >> theCurrentTemp.head.ysize >> theCurrentTemp.head.xsize >> theCurrentTemp.head.zsize;
-		
 		if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file, no template load" << ENDL; return false;}
 		
 		LOGINFO("SiPixel2DTemplate2D") << "Template ID = " << theCurrentTemp.head.ID << ", Template Version " << theCurrentTemp.head.templ_version << ", Bfield = " << theCurrentTemp.head.Bfield 
@@ -351,13 +350,13 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 				}
 			}
 			
-		}
+
 		
 				
 // Add this template to the store
 		
 		thePixelTemp_.push_back(theCurrentTemp);
-		
+		}
 	return true;
 	
 } // TempInit 
@@ -406,7 +405,6 @@ bool SiPixelTemplate2D::xytemp(int id, float cotalpha, float cotbeta, float locB
 			
 			index_id_ = -1;
 			for(i=0; i<(int)thePixelTemp_.size(); ++i) {
-				
 				if(id == thePixelTemp_[i].head.ID) {
 					
 					index_id_ = i;
