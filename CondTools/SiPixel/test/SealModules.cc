@@ -36,6 +36,8 @@
 #include "CondFormats/SiPixelObjects/interface/PixelDCSObject.h"
 #include "CondTools/SiPixel/test/PixelDCSObjectReader.h"
 
+#include "CondTools/SiPixel/test/SiPixel2DTemplateDBObjectUploader.h"
+
 using cms::SiPixelCondObjBuilder;
 using cms::SiPixelCondObjReader;
 using cms::SiPixelCondObjForHLTBuilder;
@@ -72,3 +74,4 @@ DEFINE_FWK_MODULE(SiPixelGenErrorDBObjectReader);
 DEFINE_FWK_MODULE(SiPixelGenErrorDBObjectUploader);
 DEFINE_FWK_MODULE(SiPixelFakeGenErrorDBSourceReader);
 DEFINE_FWK_MODULE(PixelDCSObjectReader<PixelCaenChannelRcd>);
+DEFINE_FWK_MODULE(SiPixel2DTemplateDBObjectUploader);
