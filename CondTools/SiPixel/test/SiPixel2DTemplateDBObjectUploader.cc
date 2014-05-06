@@ -124,8 +124,6 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 			// Now we sort them into the Barrel and Endcap:
 			if(detid.subdetId() == 1) {
 				PXBDetId pdetId = PXBDetId(detid);
-				//unsigned int detTypeP=pdetId.det();
-				//unsigned int subidP=pdetId.subdetId();
 				layer=pdetId.layer();
 				module=pdetId.module();
 				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelBarrel)){
@@ -269,7 +267,11 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 			       	side=pdetId.side(); //size=1 for -z, 2 for +z
 			       	panel=pdetId.panel(); //panel=1,2	
 		        	module=pdetId.module(); // plaquette
+<<<<<<< HEAD
 				//short temp123abc = (short) theTemplIds[1];
+=======
+				short temp123abc = (short) theTemplIds[1];
+>>>>>>> trying to read a db file
 				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelEndcap)){
 					if (side ==1 ){
 						if (disk == 1){
@@ -446,7 +448,12 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 				}
 			}
 
+<<<<<<< HEAD
 
+=======
+			short mapnum;
+			mapnum = (*obj).getTemplateID( detid.rawId());
+>>>>>>> trying to read a db file
 			//cout<<"The DetID: "<<detid.rawId()<<" is mapped to the template: "<<mapnum<<".\n\n";
 
 			//else 

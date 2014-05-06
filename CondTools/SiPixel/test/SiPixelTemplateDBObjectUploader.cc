@@ -19,6 +19,14 @@
 
 using namespace std;
 
+#include "DataFormats/DetId/interface/DetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
+
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
 SiPixelTemplateDBObjectUploader::SiPixelTemplateDBObjectUploader(const edm::ParameterSet& iConfig):
 	theTemplateCalibrations( iConfig.getParameter<vstring>("siPixelTemplateCalibrations") ),
 	theTemplateBaseString( iConfig.getParameter<std::string>("theTemplateBaseString") ),
@@ -86,12 +94,12 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 				temp.c[3] = title_char[j+3];
 				obj->push_back(temp.f);
 				obj->setMaxIndex(obj->maxIndex()+1);
-			}
-			
-			// Fill the dbobject
-			in_file >> tempstore;
-			while(!in_file.eof()) {
-				obj->setMaxIndex(obj->maxIndex()+1);
+	    }
+	    
+	    // Fill the dbobject
+	    in_file >> tempstore;
+	    while(!in_file.eof()) {
+	      obj->setMaxIndex(obj->maxIndex()+1);
 				obj->push_back(tempstore);
 				in_file >> tempstore;
 			}
@@ -108,37 +116,29 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 	edm::ESHandle<TrackerGeometry> pDD;
 	es.get<TrackerDigiGeometryRecord>().get( pDD );
 	
-	for(unsigned int i=0; i<theDetIds.size(); ++i) {
-		short s_detid = (short) theDetIds[i];
-		short templid = (short) theTemplIds[i];
-		
-		DetId theDetid(s_detid);
-		if(s_detid!=0 && s_detid!=1 && s_detid!=2) {
-			if ( ! (*obj).putTemplateID( theDetid.rawId(),templid ) ) {
-				edm::LogInfo("Template Info") << " Could not fill specified det unit: " << theDetid;
-			}
-		}
-		else {
-			edm::LogInfo("DetUnit Info")<<" There are "<<pDD->detUnits().size()<<" detectors";
-		}
-		for(TrackerGeometry::DetUnitContainer::const_iterator it = pDD->detUnits().begin(); it != pDD->detUnits().end(); it++){
-			
-			if( dynamic_cast<PixelGeomDetUnit const*>((*it))!=0){
-				DetId detid=(*it)->geographicalId();
-				
-				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelBarrel) &&
-					(detid.subdetId() == s_detid || s_detid == 0) ) {
-					if ( ! (*obj).putTemplateID( detid.rawId(),templid ) )
-						edm::LogInfo("Template Info") << " Could not fill barrel det unit";
-				}
-				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelEndcap) &&
-					(detid.subdetId() == s_detid || s_detid == 0) ) {
-					if ( ! (*obj).putTemplateID( detid.rawId(),templid ) )
-						edm::LogInfo("Template Info") << " Could not fill endcap det unit";
-				}
-				
-			}
-		}
+	short templids[52];
+	for(int k = 0; k < 52; k++){
+	  templids[k] = (short) theTemplIds[k];
+	}
+ 
+	    
+	for(TrackerGeometry::DetUnitContainer::const_iterator it = pDD->detUnits().begin(); it != pDD->detUnits().end(); it++){
+	  
+	  if( dynamic_cast<PixelGeomDetUnit const*>((*it))!=0){
+	    DetId detid=(*it)->geographicalId();
+	    
+	    if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelBarrel) &&
+	       (detid.subdetId() == s_detid || s_detid == 0) ) {
+	      if ( ! (*obj).putTemplateID( detid.rawId(),templid ) )
+		edm::LogInfo("Template Info") << " Could not fill barrel det unit";
+	    }
+	    if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelEndcap) &&
+	       (detid.subdetId() == s_detid || s_detid == 0) ) {
+	      if ( ! (*obj).putTemplateID( detid.rawId(),templid ) )
+		edm::LogInfo("Template Info") << " Could not fill endcap det unit";
+	    }
+	    
+	  }
 	}
 
 	//--- Create a new IOV

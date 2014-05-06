@@ -53,7 +53,9 @@ else :
 template_base = 'SiPixel2DTemplateDBObject' + MagFieldString + 'T'
 #theTemplateBaseString = cms.string(template_base)
 
+
 print '\nUploading %s%s with record SiPixel2DTemplateDBObjectRcd in file siPixel2DTemplates%sT_IOV5.db\n' % (template_base,version,MagFieldString)
+
 
 process.source = cms.Source("EmptyIOVSource",
                             timetype = cms.string('runnumber'),

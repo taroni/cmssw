@@ -58,7 +58,7 @@ bool SiPixelTemplate2D::pushfile(int filenum, std::vector< SiPixelTemplateStore2
 	const char *tempfile;
 	//	char title[80]; remove this
     char c;
-	const int code_version={16};
+	const int code_version={17};
 	
 	
 	
@@ -222,8 +222,7 @@ bool SiPixelTemplate2D::pushfile(int filenum, std::vector< SiPixelTemplateStore2
 //! external file template_summary_zpNNNN where NNNN are four digits 
 //! \param dbobject - db storing multiple template calibrations
 //**************************************************************** 
-bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::vector< SiPixelTemplateStore2D > & thePixelTemp_)
-
+bool SiPixelTemplate2D::pushfile(const SiPixel2DTemplateDBObject& dbobject, std::vector< SiPixelTemplateStore2D > & thePixelTemp_)
 {
 	// Add template stored in external dbobject to theTemplateStore
     
@@ -262,7 +261,6 @@ bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::v
 		>> theCurrentTemp.head.Dtype >> theCurrentTemp.head.Vbias >> theCurrentTemp.head.temperature >> theCurrentTemp.head.fluence >> theCurrentTemp.head.qscale
 		>> theCurrentTemp.head.s50 >> theCurrentTemp.head.lorywidth >> theCurrentTemp.head.lorxwidth >> theCurrentTemp.head.ysize >> theCurrentTemp.head.xsize >> theCurrentTemp.head.zsize;
 		if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file, no template load" << ENDL; return false;}
-		
 		LOGINFO("SiPixel2DTemplate2D") << "Template ID = " << theCurrentTemp.head.ID << ", Template Version " << theCurrentTemp.head.templ_version << ", Bfield = " << theCurrentTemp.head.Bfield 
 		<< ", NTy = " << theCurrentTemp.head.NTy << ", NTyx = " << theCurrentTemp.head.NTyx<< ", NTxx = " << theCurrentTemp.head.NTxx << ", Dtype = " << theCurrentTemp.head.Dtype
 		<< ", Bias voltage " << theCurrentTemp.head.Vbias << ", temperature "
