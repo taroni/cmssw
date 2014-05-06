@@ -47,11 +47,13 @@ if ( MagFieldValue==3.8 or MagFieldValue==38 ):
 				 961,962,962,960,961,962,962,960,961,962,960,
                                 #33   34   35   36   37   38   39   40   41   42    43
 				 961,962,960,961,962,960,961,962)
+
                                 #44   45    46   47   48   49   50    51
 
  			
 else :
     print 'ERROR... please use values 38 and v3.'
+
 
 
 template_base = 'SiPixelTemplateDBObject' + MagFieldString + 'T'

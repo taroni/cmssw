@@ -32,6 +32,7 @@ if ( MagFieldValue==3.8 or MagFieldValue==38 ):
 	file_path + "zp0940" + suffix,
 	file_path + "zp0941" + suffix,
 	file_path + "zp0942" + suffix
+
 )
 ### We must now ID each of these templates. Match each ID "zp####" in the appropriate array position below:
     theTemplateIds = cms.vuint32(2940,2940,2940,2940,2840,2840,2840,2840,3741,3741,3741,
@@ -52,6 +53,7 @@ else :
 
 template_base = 'SiPixel2DTemplateDBObject' + MagFieldString + 'T'
 #theTemplateBaseString = cms.string(template_base)
+
 
 print '\nUploading %s%s with record SiPixel2DTemplateDBObjectRcd in file siPixel2DTemplates%sT_IOV5.db\n' % (template_base,version,MagFieldString)
 

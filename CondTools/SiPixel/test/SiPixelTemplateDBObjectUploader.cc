@@ -19,6 +19,14 @@
 
 using namespace std;
 
+#include "DataFormats/DetId/interface/DetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
+
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
 SiPixelTemplateDBObjectUploader::SiPixelTemplateDBObjectUploader(const edm::ParameterSet& iConfig):
 	theTemplateCalibrations( iConfig.getParameter<vstring>("siPixelTemplateCalibrations") ),
 	theTemplateBaseString( iConfig.getParameter<std::string>("theTemplateBaseString") ),
@@ -56,7 +64,6 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 
 	// Open the template file(s) 
 	for(m=0; m< obj->numOfTempl(); ++m){
-
 		edm::FileInPath file( theTemplateCalibrations[m].c_str() );
 		tempfile = (file.fullPath()).c_str();
 
@@ -91,8 +98,8 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 			// Fill the dbobject
 			in_file >> tempstore;
 			while(!in_file.eof()) {
-				obj->setMaxIndex(obj->maxIndex()+1);
-				obj->push_back(tempstore);
+			  obj->setMaxIndex(obj->maxIndex()+1);
+			  obj->push_back(tempstore);
 				in_file >> tempstore;
 			}
 			
@@ -101,7 +108,7 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 		else {
 			// If file didn't open, report this
 			//edm::LogError("SiPixelTemplateDBObjectUploader") << "Error opening File" << tempfile;
-			cout << "Error opening File " << tempfile << "\n";
+		  cout << "Error opening File " << tempfile << "\n";
 		}
 	}
 	
@@ -455,15 +462,17 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 									//cout << "ERROR! OH NO!\n";
 		}
 	}
-
+	
+	
+	
 	//--- Create a new IOV
 	edm::Service<cond::service::PoolDBOutputService> poolDbService;
 	if( !poolDbService.isAvailable() ) // Die if not available
-		throw cms::Exception("NotAvailable") << "PoolDBOutputService not available";
+	  throw cms::Exception("NotAvailable") << "PoolDBOutputService not available";
 	if(poolDbService->isNewTagRequest("SiPixelTemplateDBObjectRcd"))
-		poolDbService->writeOne( obj, poolDbService->beginOfTime(), "SiPixelTemplateDBObjectRcd");
+	  poolDbService->writeOne( obj, poolDbService->beginOfTime(), "SiPixelTemplateDBObjectRcd");
 	else
-		poolDbService->writeOne( obj, poolDbService->currentTime(), "SiPixelTemplateDBObjectRcd");
+	  poolDbService->writeOne( obj, poolDbService->currentTime(), "SiPixelTemplateDBObjectRcd");
 }
 
 void SiPixelTemplateDBObjectUploader::endJob()

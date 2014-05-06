@@ -120,6 +120,7 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 			DetId detid=(*it)->geographicalId();
 
 			unsigned int layer=0, disk=0, side=0, blade=0, panel=0, module=0;
+
 					
 			// Now we sort them into the Barrel and Endcap:
 			if(detid.subdetId() == 1) {
@@ -445,7 +446,6 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 				// -----
 				}
 			}
-
 
 			//cout<<"The DetID: "<<detid.rawId()<<" is mapped to the template: "<<mapnum<<".\n\n";
 

@@ -29,13 +29,12 @@ class StripCPEfromTemplate : public StripCPE
     SID( conf.getParameter<int>("StripTemplateID")), 
     use_strip_split_cluster_errors( conf.getParameter<bool>("UseStripSplitClusterErrors") )
     {
-
-      SiStripTemplate::pushfile( 11, theStripTemp_ );
-      SiStripTemplate::pushfile( 12, theStripTemp_ );
-      SiStripTemplate::pushfile( 13, theStripTemp_ );
-      SiStripTemplate::pushfile( 14, theStripTemp_ );
-      SiStripTemplate::pushfile( 15, theStripTemp_ );
-      SiStripTemplate::pushfile( 16, theStripTemp_ );
+      SiStripTemplate::pushfile( SID + 1, theStripTemp_ );
+      SiStripTemplate::pushfile( SID + 2, theStripTemp_ );
+      SiStripTemplate::pushfile( SID + 3, theStripTemp_ );
+      SiStripTemplate::pushfile( SID + 4, theStripTemp_ );
+      SiStripTemplate::pushfile( SID + 5, theStripTemp_ );
+      SiStripTemplate::pushfile( SID + 6, theStripTemp_ );
 
 
       //cout << "STRIPS: (int)use_template_reco = " << (int)use_template_reco << endl;

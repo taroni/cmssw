@@ -58,7 +58,7 @@ bool SiPixelTemplate2D::pushfile(int filenum, std::vector< SiPixelTemplateStore2
 	const char *tempfile;
 	//	char title[80]; remove this
     char c;
-	const int code_version={16};
+	const int code_version={17};
 	
 	
 	
@@ -223,7 +223,7 @@ bool SiPixelTemplate2D::pushfile(int filenum, std::vector< SiPixelTemplateStore2
 //! \param dbobject - db storing multiple template calibrations
 //**************************************************************** 
 
-bool SiPixelTemplate2D::pushfile(const SiPixelTemplateDBObject& dbobject, std::vector< SiPixelTemplateStore2D > & thePixelTemp_)
+bool SiPixelTemplate2D::pushfile(const SiPixel2DTemplateDBObject& dbobject, std::vector< SiPixelTemplateStore2D > & thePixelTemp_)
 {
 	// Add template stored in external dbobject to theTemplateStore
     
