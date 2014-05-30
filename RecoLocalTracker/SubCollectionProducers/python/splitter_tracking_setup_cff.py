@@ -27,9 +27,9 @@ def customizeTracking(newpixclusters, newstripclusters, newpixrechits, newstripr
 
     initialStepSeedLayers.BPix.HitProducer =newpixrechits
     initialStepSeedLayers.FPix.HitProducer =newpixrechits
-    initialStepClusters.pixelClusters = newpixclusters
-    initialStepClusters.stripClusters = newstripclusters
-    initialStepClusters.stripRecHits  =newstriprechits
+    #initialStepClusters.pixelClusters = newpixclusters
+    #initialStepClusters.stripClusters = newstripclusters
+    #initialStepClusters.stripRecHits  =newstriprechits
     initialStepSeeds.ClusterCheckPSet.PixelClusterCollectionLabel = newpixclusters
     initialStepSeeds.ClusterCheckPSet.ClusterCollectionLabel      = newstripclusters
     #initialStepSeeds.OrderedHitsFactoryPSet.SeedingLayers = 'initialStepSeedLayers'
@@ -80,7 +80,7 @@ def customizeTracking(newpixclusters, newstripclusters, newpixrechits, newstripr
     detachedTripletStepSeedLayers.FPix.HitProducer =newpixrechits
     detachedTripletStepSeeds.ClusterCheckPSet.PixelClusterCollectionLabel = newpixclusters
     detachedTripletStepSeeds.ClusterCheckPSet.ClusterCollectionLabel      = newstripclusters
-    detachedTripletStepClusters.stripRecHits =newstriprechits
+    #detachedTripletStepClusters.stripRecHits =newstriprechits
 
     mixedTripletStepClusters.pixelClusters = newpixclusters
     mixedTripletStepClusters.stripClusters = newstripclusters
@@ -102,9 +102,9 @@ def customizeTracking(newpixclusters, newstripclusters, newpixrechits, newstripr
     pixelLessStepClusters.stripClusters = newstripclusters
     pixelLessStepSeeds.ClusterCheckPSet.PixelClusterCollectionLabel = newpixclusters
     pixelLessStepSeeds.ClusterCheckPSet.ClusterCollectionLabel      = newstripclusters
-    pixelLessStepSeedClusters.stripRecHits = newstriprechits
-    pixelLessStepSeedClusters.pixelClusters = newpixclusters
-    pixelLessStepSeedClusters.stripClusters = newstripclusters
+#    pixelLessStepSeedClusters.stripRecHits = newstriprechits
+#    pixelLessStepSeedClusters.pixelClusters = newpixclusters
+#    pixelLessStepSeedClusters.stripClusters = newstripclusters
     pixelLessStepSeedLayers.MTIB.rphiRecHits = cms.InputTag(newstriprechits,"rphiRecHit")
     pixelLessStepSeedLayers.MTID.rphiRecHits = cms.InputTag(newstriprechits,"rphiRecHit")
     pixelLessStepSeedLayers.MTEC.rphiRecHits = cms.InputTag(newstriprechits,"rphiRecHit")
@@ -115,9 +115,9 @@ def customizeTracking(newpixclusters, newstripclusters, newpixrechits, newstripr
     
     tobTecStepClusters.pixelClusters = newpixclusters
     tobTecStepClusters.stripClusters = newstripclusters
-    tobTecStepSeedClusters.pixelClusters = newpixclusters
-    tobTecStepSeedClusters.stripClusters = newstripclusters
-    tobTecStepSeedClusters.stripRecHits =newstriprechits
+#    tobTecStepSeedClusters.pixelClusters = newpixclusters
+#    tobTecStepSeedClusters.stripClusters = newstripclusters
+#    tobTecStepSeedClusters.stripRecHits =newstriprechits
     tobTecStepSeedLayersPair.TOB.matchedRecHits  = cms.InputTag(newstriprechits,"matchedRecHit")
     tobTecStepSeedLayersPair.TEC.matchedRecHits  = cms.InputTag(newstriprechits,"matchedRecHit")
     tobTecStepSeedLayersTripl.TOB.matchedRecHits = cms.InputTag(newstriprechits,"matchedRecHit")

@@ -11,6 +11,14 @@
 
 #include <fstream>
 
+#include "DataFormats/DetId/interface/DetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
+#include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
+
+#include <stdio.h>
+#include <iostream>
+using namespace std;
+
 SiPixelTemplateDBObjectUploader::SiPixelTemplateDBObjectUploader(const edm::ParameterSet& iConfig):
 	theTemplateCalibrations( iConfig.getParameter<vstring>("siPixelTemplateCalibrations") ),
 	theTemplateBaseString( iConfig.getParameter<std::string>("theTemplateBaseString") ),
@@ -49,57 +57,57 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 
 	// Open the template file(s) 
 	for(m=0; m< obj->numOfTempl(); ++m){
-
-		edm::FileInPath file( theTemplateCalibrations[m].c_str() );
-		tempfile = (file.fullPath()).c_str();
-
-		std::ifstream in_file(tempfile, std::ios::in);
-			
-		if(in_file.is_open()){
-			edm::LogInfo("Template Info") << "Opened Template File: " << file.fullPath().c_str();
-
-			// Local variables 
-			char title_char[80], c;
-			SiPixelTemplateDBObject::char2float temp;
-			float tempstore;
-			int iter,j;
-			
-			// Templates contain a header char - we must be clever about storing this
-			for (iter = 0; (c=in_file.get()) != '\n'; ++iter) {
-				if(iter < 79) {title_char[iter] = c;}
-			}
-			if(iter > 78) {iter=78;}
-			title_char[iter+1] ='\n';
-			
-			for(j=0; j<80; j+=4) {
-				temp.c[0] = title_char[j];
+	    
+	  edm::FileInPath file( theTemplateCalibrations[m].c_str() );
+	  tempfile = (file.fullPath()).c_str();
+	  
+	  std::ifstream in_file(tempfile, std::ios::in);
+	  
+	  if(in_file.is_open()){
+	    edm::LogInfo("Template Info") << "Opened Template File: " << file.fullPath().c_str();
+	    
+	    // Local variables 
+	    char title_char[80], c;
+	    SiPixelTemplateDBObject::char2float temp;
+	    float tempstore;
+	    int iter,j;
+	    
+	    // Templates contain a header char - we must be clever about storing this
+	    for (iter = 0; (c=in_file.get()) != '\n'; ++iter) {
+	      if(iter < 79) {title_char[iter] = c;}
+	    }
+	    if(iter > 78) {iter=78;}
+	    title_char[iter+1] ='\n';
+	    
+	    for(j=0; j<80; j+=4) {
+	      temp.c[0] = title_char[j];
 				temp.c[1] = title_char[j+1];
 				temp.c[2] = title_char[j+2];
 				temp.c[3] = title_char[j+3];
 				obj->push_back(temp.f);
 				obj->setMaxIndex(obj->maxIndex()+1);
-			}
-			
-			// Fill the dbobject
-			in_file >> tempstore;
-			while(!in_file.eof()) {
-				obj->setMaxIndex(obj->maxIndex()+1);
+	    }
+	    
+	    // Fill the dbobject
+	    in_file >> tempstore;
+	    while(!in_file.eof()) {
+	      obj->setMaxIndex(obj->maxIndex()+1);
 				obj->push_back(tempstore);
 				in_file >> tempstore;
-			}
-			
-			in_file.close();
-		}
-		else {
-			// If file didn't open, report this
-			edm::LogError("SiPixelTemplateDBObjectUploader") << "Error opening File" << tempfile;
-		}
+	    }
+	    
+	    in_file.close();
+	  }
+	  else {
+	    // If file didn't open, report this
+	    edm::LogError("SiPixelTemplateDBObjectUploader") << "Error opening File" << tempfile;
+	  }
 	}
 	
 	edm::ESHandle<TrackerGeometry> pDD;
 	es.get<TrackerDigiGeometryRecord>().get( pDD );
-	
-	for(unsigned int i=0; i<theDetIds.size(); ++i) {
+
+  	for(unsigned int i=0; i<theDetIds.size(); ++i) {
 		short s_detid = (short) theDetIds[i];
 		short templid = (short) theTemplIds[i];
 		
@@ -114,7 +122,7 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 		}
 		for(TrackerGeometry::DetUnitContainer::const_iterator it = pDD->detUnits().begin(); it != pDD->detUnits().end(); it++){
 			
-			if( dynamic_cast<PixelGeomDetUnit const*>((*it))!=0){
+			if( dynamic_cast<PixelGeomDetUnit*>((*it))!=0){
 				DetId detid=(*it)->geographicalId();
 				
 				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelBarrel) &&

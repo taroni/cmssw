@@ -104,24 +104,24 @@ StripCPEfromTemplate::localParameters( const SiStripCluster& cluster,
       if      ( p.moduleGeom == 1 ) // IB1 
 	{
 	  if ( !is_stereo ) 
-	    id = 11;
+	    id = SID + 1;
 	  else
-	    id = 12;
+	    id = SID + 2;
 	}
       else if ( p.moduleGeom == 2 ) // IB2
 	{
-	  id = 13;
+	  id = SID + 3;
 	}
       else if ( p.moduleGeom == 3 ) // OB1
 	{
-	  id = 16; 
+	  id = SID + 6; 
 	}
       else if ( p.moduleGeom == 4 ) // OB2
 	{
 	  if ( !is_stereo )
-	    id = 14;
+	    id = SID + 4;
 	  else
-	    id = 15;
+	    id = SID + 5;
 	}
       //else 
       //cout << "Do not use templates for strip modules other than IB1, IB2, OB1 and OB2" << endl;
