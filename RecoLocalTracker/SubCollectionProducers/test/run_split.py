@@ -10,34 +10,37 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_38T_cff')
+process.load('Configuration.StandardSequences.Digi_cff')
+process.load('Configuration.StandardSequences.Digi_cff')
+process.load('Configuration.StandardSequences.SimL1Emulator_cff')
+process.load('Configuration.StandardSequences.DigiToRaw_cff')
+process.load('HLTrigger.Configuration.HLT_GRun_cff')
+process.load('Configuration.StandardSequences.RawToDigi_cff')
+process.load('Configuration.StandardSequences.L1Reco_cff')
+process.load("SimGeneral.MixingModule.mixNoPU_cfi")
+
+process.load('Configuration.StandardSequences.Simulation_cff')
+process.load('Configuration.StandardSequences.DigiToRaw_cff')
 process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-
+process.load('Configuration.StandardSequences.SimL1Emulator_cff')
+process.load("Configuration.StandardSequences.L1Emulator_cff")
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(10)
 )
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
     fileNames = cms.untracked.vstring(
         'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTT_1500_8TeV_Tauola_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.root'
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_0.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_1.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_2.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_3.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_4.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_5.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_6.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_7.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_8.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_9.root'
-#        'file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/CMSSW_7_1_X_2014-03-18-0200/src/ZpTT_1500_8TeV_Tauola_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.root'
     ),
 
 )
+      
+
                             
 # from Jean-Roch
 process.load("RecoLocalTracker.SiStripRecHitConverter.StripCPEfromTemplate_cfi")
@@ -83,6 +86,8 @@ process.splitClusters = cms.EDProducer(
     tmpSplitPixel         = cms.bool(True), # template pixel spliting
     tmpSplitStrip         = cms.bool(True), # template strip splitting
     useStraightTracks     = cms.bool(True),
+    StripTemplateID       = cms.uint32(10), 
+    LoadTemplatesFromDB   = cms.bool(False), 
     test     = cms.bool(True)
     )
 
@@ -113,56 +118,40 @@ process.StripCPEfromTrackAngleESProducer.TemplateRecoSpeed = 0;
 process.newrechits = cms.Sequence(process.mySiPixelRecHits*process.mySiStripRecHits)
 
 ######## track to vertex assoc ##################3
-from CommonTools.RecoUtils.pf_pu_assomap_cfi import AssociationMaps
-process.Vertex2TracksDefault = AssociationMaps.clone(
-    AssociationType = cms.InputTag("VertexToTracks"),
-    MaxNumberOfAssociations = cms.int32(1)
-)
+## from CommonTools.RecoUtils.pf_pu_assomap_cfi import AssociationMaps
+## process.Vertex2TracksDefault = AssociationMaps.clone(
+##     AssociationType = cms.InputTag("VertexToTracks"),
+##     MaxNumberOfAssociations = cms.int32(1)
+## )
 
 # The commands included in splitter_tracking_setup_cff.py instruct 
 # the tracking machinery to use the clusters and rechits generated after 
 # cluster splitting (instead of the default clusters and rechits)
 #process.load('RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup2_cff')
-from RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup_cff import customizeTracking
-customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits')
 
 process.fullreco = cms.Sequence(process.globalreco*process.highlevelreco)
-process.Globalreco = cms.Sequence(process.globalreco)
-process.Highlevelreco = cms.Sequence(process.highlevelreco)
-
 process.options = cms.untracked.PSet(
 
 )
+process.splitSiPixelClustersCache = cms.EDProducer( "SiPixelClusterShapeCacheProducer",
+                                                  src = cms.InputTag( "splitClusters" ),
+                                                  onDemand = cms.bool( False )
+)
+
+from RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup_cff import customizeTracking
+customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits','splitSiPixelClustersCache')
 
 process.load("RecoTracker.TrackProducer.TrackRefitters_cff")
 
 # Output definition
-process.PixelTreeSplit = cms.EDAnalyzer(
-    "PixelAnalysisTree",
-    verbose                = cms.untracked.int32(0),
-    rootFileName           = cms.untracked.string('pixelTrees_TS_DATA.root'),
-    treeName               = cms.untracked.string('treeTmpSplit'),
-    dumpAllEvents          = cms.untracked.int32(1),
-    globalTag              = cms.string("GR_R_53::All"),
-    muonCollectionLabel    = cms.untracked.InputTag('muons'),
-#    trajectoryInputLabel   = cms.untracked.InputTag('TrackRefitter'),
-    trajectoryInputLabel   = cms.untracked.InputTag('generalTracks::SPLIT'),          
-    trackCollectionLabel   = cms.untracked.InputTag('generalTracks::SPLIT'),
-    pixelClusterLabel      = cms.untracked.InputTag('splitClusters'),
-    pixelRecHitLabel       = cms.untracked.InputTag('mySiPixelRecHits'),
-    L1GTReadoutRecordLabel = cms.untracked.InputTag("gtDigis"),
-    hltL1GtObjectMap       = cms.untracked.InputTag("hltL1GtObjectMap"),          
-    HLTResultsLabel        = cms.untracked.InputTag("TriggerResults::HLT"),
-    HLTProcessName         = cms.untracked.string("HLT"),
-    mapTrack2Vertex        = cms.untracked.bool(True)
-    )
 
 
 process.RECOoutput = cms.OutputModule("PoolOutputModule",
     outputCommands = process.FEVTDEBUGEventContent.outputCommands,
-    fileName = cms.untracked.string('ZpTauTau8TeV_split_71X_10.root'),
+    fileName = cms.untracked.string('/tmp/taroni/ZpTauTau8TeV_split_71X.root'),
     dataset = cms.untracked.PSet(
-        dataTier = cms.untracked.string('GEN-SIM-RECO')
+        #filterName = cms.untracked.string(''),
+        dataTier = cms.untracked.string('RECO')
     )
 )
 ## process.RECOoutput.outputCommands.append( 'keep TrackingParticles_mergedtruth_MergedTrackTruth_*')
@@ -171,22 +160,50 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
 # Additional output definition
 process.dump = cms.EDAnalyzer("EventContentAnalyzer")
 # Other statements
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
 
-process.GlobalTag.globaltag = 'MC_71_V1::All'
+
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelHighTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelEndcapHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelEndcapLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTECHighTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTECLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIBHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIBLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIDHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIDLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTOBHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTOBLowTof')
+
 
 
 
 # Path and EndPath definitions
-process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.recopixelvertexing))
+process.pre_init  = cms.Path(cms.Sequence(process.pdigi*process.SimL1Emulator*process.DigiToRaw))
+process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.siPixelClusterShapeCache*process.recopixelvertexing))
+process.pixdigi_step= cms.Path(cms.Sequence(process.siPixelDigis))
+process.strdigi_step= cms.Path(cms.Sequence(process.siStripDigis))
+process.trklocalreco_step= cms.Path(cms.Sequence(process.trackerlocalreco))
+process.rawtodigi_step = cms.Path(cms.Sequence(process.RawToDigi))
+process.localreco_step = cms.Path(cms.Sequence(process.localreco))
+process.beamspot_step = cms.Path(cms.Sequence(process.offlineBeamSpot))
+process.recopixelvertexing_step = cms.Path(cms.Sequence(process.siPixelClusterShapeCache*process.recopixelvertexing))
+
+process.rechits_step=cms.Path(process.siPixelRecHits)
 process.dump_step = cms.Path(process.dump)
-process.splitClusters_step=cms.Path(process.splitClusters)
+process.splitClusters_step=cms.Path(process.mix+process.splitClusters+process.splitSiPixelClustersCache)
 process.newrechits_step=cms.Path(process.newrechits)
 process.fullreco_step=cms.Path(process.fullreco)
+process.newreco_step = cms.Path(process.mix*process.splitClusters*process.siPixelClusterShapeCache*process.newrechits*process.fullreco)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 #process.pixeltree_tempsplit =cms.Path(process.PixelTreeSplit)
 #process.vertex_assoc = cms.Path(process.Vertex2TracksDefault)
 
-# Schedule definition
 
-process.schedule = cms.Schedule(process.init_step,process.splitClusters_step,process.newrechits_step,process.fullreco_step,process.RECOoutput_step)
+# Schedule definition
+process.schedule = cms.Schedule(process.init_step, process.splitClusters_step,process.newrechits_step, process.fullreco_step,process.RECOoutput_step)
+
