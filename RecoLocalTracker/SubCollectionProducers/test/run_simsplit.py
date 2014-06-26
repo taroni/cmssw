@@ -20,9 +20,9 @@ process.load('Configuration/StandardSequences/DigiToRaw_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(10)
 )
-process.MessageLogger.cerr.FwkReport.reportEvery = 10
+process.MessageLogger.cerr.FwkReport.reportEvery = 1
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
@@ -75,6 +75,8 @@ process.splitClusters = cms.EDProducer(
     tmpSplitPixel         = cms.bool(False), # template pixel spliting
     tmpSplitStrip         = cms.bool(False), # template strip splitting
     useStraightTracks     = cms.bool(True),
+    StripTemplateID       = cms.uint32(10), 
+    LoadTemplatesFromDB   = cms.bool(True), 
     test     = cms.bool(True)
     )
 
@@ -82,25 +84,6 @@ process.mySiPixelRecHits = process.siPixelRecHits.clone(src = cms.InputTag("spli
 process.mySiStripRecHits = process.siStripMatchedRecHits.clone(
     src = cms.InputTag("splitClusters"),  ClusterProducer = cms.InputTag("splitClusters")
     )
-
-############################## inserted new stuff
-                            
-# from Jean-Roch 
-process.load("RecoLocalTracker.SiStripRecHitConverter.StripCPEfromTemplate_cfi")
-process.StripCPEfromTrackAngleESProducer = process.StripCPEfromTemplateESProducer.clone(ComponentName='StripCPEfromTrackAngle')
-
-process.load("RecoLocalTracker.SiStripRecHitConverter.StripCPEfromTemplate_cfi")
-process.StripCPEfromTemplateESProducer.UseTemplateReco = True
-
-# Include the latest pixel templates, which are not in DB. 
-# These are to be used for pixel splitting.
-process.load('RecoLocalTracker.SiPixelRecHits.PixelCPETemplateReco_cfi')
-process.templates.LoadTemplatesFromDB = False
-
-# This is the default speed. Recommended.
-process.StripCPEfromTrackAngleESProducer.TemplateRecoSpeed = 0;
-
-############################## inserted new stuff
 
 process.newrechits = cms.Sequence(process.mySiPixelRecHits*process.mySiStripRecHits)
 
@@ -120,8 +103,13 @@ process.fullreco = cms.Sequence(process.globalreco*process.highlevelreco)
 process.options = cms.untracked.PSet(
 
 )
+process.splitSiPixelClustersCache = cms.EDProducer( "SiPixelClusterShapeCacheProducer",
+                                                  src = cms.InputTag( "splitClusters" ),
+                                                  onDemand = cms.bool( False )
+)
+
 from RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup_cff import customizeTracking
-customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits')
+customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits','splitSiPixelClustersCache')
 
 process.load("RecoTracker.TrackProducer.TrackRefitters_cff")
 
@@ -130,7 +118,7 @@ process.load("RecoTracker.TrackProducer.TrackRefitters_cff")
 
 process.RECOoutput = cms.OutputModule("PoolOutputModule",
     outputCommands = process.FEVTDEBUGEventContent.outputCommands,
-    fileName = cms.untracked.string('ZpTauTau8TeV_simsplit_71X.root'),
+    fileName = cms.untracked.string('/tmp/taroni/ZpTauTau8TeV_simsplit_71X_test.root'),
     dataset = cms.untracked.PSet(
         #filterName = cms.untracked.string(''),
         dataTier = cms.untracked.string('RECO')
@@ -142,8 +130,10 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
 # Additional output definition
 process.dump = cms.EDAnalyzer("EventContentAnalyzer")
 # Other statements
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
 
-process.GlobalTag.globaltag = 'MC_71_V1::All'
 
 process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelHighTof')
 process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelLowTof')
@@ -161,15 +151,43 @@ process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTOBLowTof')
 
 from RecoLocalCalo.HcalRecProducers.HBHEIsolatedNoiseReflagger_cfi import *
 process.hbhereco.hbheInput= cms.InputTag("hbheprereco::SPLIT")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+process.load("CalibTracker.SiPixelESProducers.SiPixelTemplateDBObjectESProducer_cfi")
+process.myPixelTemplate = cms.ESSource("PoolDBESSource",CondDBSetup,
+                                             connect = cms.string("sqlite_file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/databasetest/CMSSW_7_1_X_2014-05-05-0200/src/RecoLocalTracker/SubCollectionProducers/test/siPixelTemplates38T_IOV7.db"),
+                                             toGet = cms.VPSet(cms.PSet(record = cms.string("SiPixelTemplateDBObjectRcd"),
+                                             tag = cms.string("SiPixelTemplateDBObject38Tv3"))
+                                                           )
+                                             )
+process.es_prefer_myPixelTemplate = cms.ESPrefer("PoolDBESSource","myPixelTemplate")
+
+process.myPixel2DTemplate = cms.ESSource("PoolDBESSource",CondDBSetup,
+                                         connect = cms.string("sqlite_file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/databasetest/CMSSW_7_1_X_2014-05-05-0200/src/RecoLocalTracker/SubCollectionProducers/test/siPixel2DTemplates38T_IOV7.db"),
+                                         toGet = cms.VPSet(cms.PSet(record = cms.string("SiPixel2DTemplateDBObjectRcd"),
+                                         tag = cms.string("SiPixel2DTemplateDBObject38Tv17"))
+                                                           )
+                                         )
+process.es_prefer_myPixel2DTemplate = cms.ESPrefer("PoolDBESSource","myPixel2DTemplate")
+
 
 # Path and EndPath definitions
 process.pre_init  = cms.Path(cms.Sequence(process.pdigi*process.SimL1Emulator*process.DigiToRaw))
-process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.recopixelvertexing))
+process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.siPixelClusterShapeCache*process.recopixelvertexing))
+process.pixdigi_step= cms.Path(cms.Sequence(process.siPixelDigis))
+process.strdigi_step= cms.Path(cms.Sequence(process.siStripDigis))
+process.trklocalreco_step= cms.Path(cms.Sequence(process.trackerlocalreco))
+process.rawtodigi_step = cms.Path(cms.Sequence(process.RawToDigi))
+process.localreco_step = cms.Path(cms.Sequence(process.localreco))
+process.beamspot_step = cms.Path(cms.Sequence(process.offlineBeamSpot))
+process.recopixelvertexing_step = cms.Path(cms.Sequence(process.siPixelClusterShapeCache*process.recopixelvertexing))
+
 process.rechits_step=cms.Path(process.siPixelRecHits)
 process.dump_step = cms.Path(process.dump)
-process.splitClusters_step=cms.Path(process.mix+process.splitClusters)
+process.splitClusters_step=cms.Path(process.mix+process.splitClusters+process.splitSiPixelClustersCache)
 process.newrechits_step=cms.Path(process.newrechits)
 process.fullreco_step=cms.Path(process.fullreco)
+process.newreco_step = cms.Path(process.mix*process.splitClusters*process.siPixelClusterShapeCache*process.newrechits*process.fullreco)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 #process.pixeltree_tempsplit =cms.Path(process.PixelTreeSplit)
@@ -177,4 +195,4 @@ process.RECOoutput_step = cms.EndPath(process.RECOoutput)
 
 
 # Schedule definition
-process.schedule = cms.Schedule(process.init_step,process.splitClusters_step,process.newrechits_step, process.fullreco_step, process.RECOoutput_step)
+process.schedule = cms.Schedule(process.init_step, process.splitClusters_step,process.newrechits_step, process.fullreco_step,process.RECOoutput_step )

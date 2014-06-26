@@ -19,15 +19,8 @@
 
 using namespace std;
 
-#include "DataFormats/DetId/interface/DetId.h"
-#include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
-#include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
-
-#include <stdio.h>
-#include <iostream>
-using namespace std;
-
 SiPixelTemplateDBObjectUploader::SiPixelTemplateDBObjectUploader(const edm::ParameterSet& iConfig):
+
 	theTemplateCalibrations( iConfig.getParameter<vstring>("siPixelTemplateCalibrations") ),
 	theTemplateBaseString( iConfig.getParameter<std::string>("theTemplateBaseString") ),
 	theVersion( iConfig.getParameter<double>("Version") ),
@@ -49,6 +42,7 @@ SiPixelTemplateDBObjectUploader::beginJob()
 void
 SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::EventSetup& es)
 {
+
 	//--- Make the POOL-ORA object to store the database object
 	SiPixelTemplateDBObject* obj = new SiPixelTemplateDBObject;
 
@@ -478,4 +472,4 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 void SiPixelTemplateDBObjectUploader::endJob()
 {
 }
-
+ 
