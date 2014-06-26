@@ -1,6 +1,8 @@
 #ifndef CondFormats_SiPixelObjects_SiPixel2DTemplateDBObject_h
 #define CondFormats_SiPixelObjects_SiPixel2DTemplateDBObject_h 1
 
+#include "CondFormats/Serialization/interface/Serializable.h"
+
 #include <vector>
 #include <map>
 #include <stdint.h>
@@ -107,5 +109,7 @@ private:
 	bool isInvalid_;
 	std::vector<float> sVector_;
 	std::map<unsigned int,short> templ_ID;
+
+	COND_SERIALIZABLE;  
 };//end SiPixel2DTemplateDBObject
 #endif

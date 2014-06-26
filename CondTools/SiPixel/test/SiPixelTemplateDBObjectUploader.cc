@@ -19,14 +19,6 @@
 
 using namespace std;
 
-#include "DataFormats/DetId/interface/DetId.h"
-#include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
-#include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
-
-#include <stdio.h>
-#include <iostream>
-using namespace std;
-
 SiPixelTemplateDBObjectUploader::SiPixelTemplateDBObjectUploader(const edm::ParameterSet& iConfig):
 	theTemplateCalibrations( iConfig.getParameter<vstring>("siPixelTemplateCalibrations") ),
 	theTemplateBaseString( iConfig.getParameter<std::string>("theTemplateBaseString") ),
@@ -49,6 +41,7 @@ SiPixelTemplateDBObjectUploader::beginJob()
 void
 SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::EventSetup& es)
 {
+
 	//--- Make the POOL-ORA object to store the database object
 	SiPixelTemplateDBObject* obj = new SiPixelTemplateDBObject;
 
@@ -63,7 +56,7 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 	obj->setVersion(theVersion);
 
 	// Open the template file(s) 
-	for(m=0; m< obj->numOfTempl(); ++m){
+a	for(m=0; m< obj->numOfTempl(); ++m){
 
 		edm::FileInPath file( theTemplateCalibrations[m].c_str() );
 		tempfile = (file.fullPath()).c_str();
@@ -149,9 +142,10 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 		poolDbService->writeOne( obj, poolDbService->beginOfTime(), "SiPixelTemplateDBObjectRcd");
 	else
 		poolDbService->writeOne( obj, poolDbService->currentTime(), "SiPixelTemplateDBObjectRcd");
+
 }
 
 void SiPixelTemplateDBObjectUploader::endJob()
 {
 }
-
+ 
