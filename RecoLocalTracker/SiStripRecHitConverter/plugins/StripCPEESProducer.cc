@@ -13,6 +13,7 @@
 
 StripCPEESProducer::StripCPEESProducer(const edm::ParameterSet & p) 
 {
+
   std::string name = p.getParameter<std::string>("ComponentName");
   std::string type=name;
   if (!p.exists("ComponentType"))

@@ -33,6 +33,11 @@
 #include "CondFormats/DataRecord/interface/SiPixelGainCalibrationOfflineSimRcd.h"
 #include "CondFormats/DataRecord/interface/SiPixelGainCalibrationForHLTSimRcd.h"
 #include "CondFormats/DataRecord/interface/SiPixelLorentzAngleSimRcd.h"
+#include "CondFormats/SiPixelObjects/interface/SiPixel2DTemplateDBObject.h"
+#include "CondFormats/DataRecord/interface/SiPixel2DTemplateDBObjectRcd.h"
+#include "CondFormats/DataRecord/interface/SiPixel2DTemplateDBObject38TRcd.h"
+#include "CondFormats/DataRecord/interface/SiPixel2DTemplateDBObject4TRcd.h"
+#include "CondFormats/DataRecord/interface/SiPixel2DTemplateDBObject0TRcd.h"
 
 namespace {
  struct InitRocs {void operator()(SiPixelFedCablingMap& m){ m.initializeRocs();}};
@@ -63,3 +68,8 @@ REGISTER_PLUGIN(PixelCaenChannelIMonRcd, PixelDCSObject<float>);
 REGISTER_PLUGIN(PixelCaenChannelRcd, PixelDCSObject<CaenChannel>);
 
 REGISTER_PLUGIN(SiPixelDetVOffRcd,SiStripDetVOff);
+
+REGISTER_PLUGIN(SiPixel2DTemplateDBObjectRcd,SiPixel2DTemplateDBObject);
+REGISTER_PLUGIN(SiPixel2DTemplateDBObject38TRcd,SiPixel2DTemplateDBObject);
+REGISTER_PLUGIN(SiPixel2DTemplateDBObject4TRcd,SiPixel2DTemplateDBObject);
+REGISTER_PLUGIN(SiPixel2DTemplateDBObject0TRcd,SiPixel2DTemplateDBObject);
