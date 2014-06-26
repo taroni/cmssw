@@ -166,7 +166,7 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
 process.load("CalibTracker.SiPixelESProducers.SiPixelTemplateDBObjectESProducer_cfi")
 process.myPixelTemplate = cms.ESSource("PoolDBESSource",CondDBSetup,
-                                             connect = cms.string("sqlite_file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/databasetest/CMSSW_7_1_X_2014-05-05-0200/src/RecoLocalTracker/SubCollectionProducers/test/siPixelTemplates38T_IOV7.db"),
+                                             connect = cms.string("sqlite_file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/templates/siPixelTemplates38T_IOV7.db"),
                                              toGet = cms.VPSet(cms.PSet(record = cms.string("SiPixelTemplateDBObjectRcd"),
                                              tag = cms.string("SiPixelTemplateDBObject38Tv3"))
                                                            )
@@ -174,7 +174,7 @@ process.myPixelTemplate = cms.ESSource("PoolDBESSource",CondDBSetup,
 process.es_prefer_myPixelTemplate = cms.ESPrefer("PoolDBESSource","myPixelTemplate")
 
 process.myPixel2DTemplate = cms.ESSource("PoolDBESSource",CondDBSetup,
-                                         connect = cms.string("sqlite_file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/databasetest/CMSSW_7_1_X_2014-05-05-0200/src/RecoLocalTracker/SubCollectionProducers/test/siPixel2DTemplates38T_IOV7.db"),
+                                         connect = cms.string("sqlite_file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/templates/siPixel2DTemplates38T_IOV7.db"),
                                          toGet = cms.VPSet(cms.PSet(record = cms.string("SiPixel2DTemplateDBObjectRcd"),
                                          tag = cms.string("SiPixel2DTemplateDBObject38Tv17"))
                                                            )
