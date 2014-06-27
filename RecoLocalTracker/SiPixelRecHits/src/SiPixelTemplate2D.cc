@@ -346,11 +346,9 @@ bool SiPixelTemplate2D::pushfile(const SiPixel2DTemplateDBObject& dbobject, std:
 				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 8, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 					
 				}
+
 			}
 			
-
-		
-				
 // Add this template to the store
 		
 		thePixelTemp_.push_back(theCurrentTemp);
@@ -404,7 +402,7 @@ bool SiPixelTemplate2D::xytemp(int id, float cotalpha, float cotbeta, float locB
 			index_id_ = -1;
 			for(i=0; i<(int)thePixelTemp_.size(); ++i) {
 				if(id == thePixelTemp_[i].head.ID) {
-				  std::cout << __LINE__ << " " << id << " " << index_id_ << std::endl;
+				 
 					index_id_ = i;
 					id_current_ = id;
 					
