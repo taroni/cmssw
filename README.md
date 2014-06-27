@@ -26,7 +26,7 @@ How to download, compile and run the code for the cluster splitting.
  
 3. Add my repository and pull the code
 >git remote add silviaGit https://github.com/taroni/cmssw.git <br />
->git pull silviaGit 71X_SLC6  <br />
+>git pull silviaGit 71X_SLC6_sqlitefile  <br />
 
 4. Unset some default options of gcc
 >setenv USER_CXXFLAGS "-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable"  <br />
