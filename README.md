@@ -29,10 +29,12 @@ How to download, compile and run the code for the cluster splitting.
 >git pull silviaGit 71X_SLC6_sqlitefile  <br />
 
 4. Unset some default options of gcc
->setenv USER_CXXFLAGS "-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable" <br /> 
-or <br />
+>setenv USER_CXXFLAGS "-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable" <br />
+
+  or <br />
 >export USER_CXXFLAGS="-Wno-delete-non-virtual-dtor -Wno-error=unused-but-set-variable -Wno-error=unused-variable"  <br /> 
-depending of your shell
+
+  depending of your shell
 
 5. Compile
 >scram b -j 8  <br />
