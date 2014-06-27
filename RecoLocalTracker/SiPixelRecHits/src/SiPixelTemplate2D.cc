@@ -256,11 +256,10 @@ bool SiPixelTemplate2D::pushfile(const SiPixel2DTemplateDBObject& dbobject, std:
 		LOGINFO("SiPixel2DTemplate2D") << "Loading Pixel Template File - " << theCurrentTemp.head.title << ENDL;
 		
 		// next, the header information     
-		
+
 		db >> theCurrentTemp.head.ID  >> theCurrentTemp.head.templ_version >> theCurrentTemp.head.Bfield >> theCurrentTemp.head.NTy >> theCurrentTemp.head.NTyx >> theCurrentTemp.head.NTxx
 		>> theCurrentTemp.head.Dtype >> theCurrentTemp.head.Vbias >> theCurrentTemp.head.temperature >> theCurrentTemp.head.fluence >> theCurrentTemp.head.qscale
 		>> theCurrentTemp.head.s50 >> theCurrentTemp.head.lorywidth >> theCurrentTemp.head.lorxwidth >> theCurrentTemp.head.ysize >> theCurrentTemp.head.xsize >> theCurrentTemp.head.zsize;
-		
 		if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file, no template load" << ENDL; return false;}
 		
 		LOGINFO("SiPixel2DTemplate2D") << "Template ID = " << theCurrentTemp.head.ID << ", Template Version " << theCurrentTemp.head.templ_version << ", Bfield = " << theCurrentTemp.head.Bfield 
@@ -313,7 +312,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixel2DTemplateDBObject& dbobject, std:
 					db >> theCurrentTemp.entry[iy][jx].lanpar[k][0] >> theCurrentTemp.entry[iy][jx].lanpar[k][1] 
 					>> theCurrentTemp.entry[iy][jx].lanpar[k][2] >> theCurrentTemp.entry[iy][jx].lanpar[k][3] >> theCurrentTemp.entry[iy][jx].lanpar[k][4];
 					
-					if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 4, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+					if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 4, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 					
 				}
 				
@@ -323,7 +322,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixel2DTemplateDBObject& dbobject, std:
 							
 							for (i=0; i<T2YSIZE; ++i) {db >> theCurrentTemp.entry[iy][jx].xytemp[k][l][i][j];}
 							
-							if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 5, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+							if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 5, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 						}
 					}
 				}
@@ -333,27 +332,30 @@ bool SiPixelTemplate2D::pushfile(const SiPixel2DTemplateDBObject& dbobject, std:
 				>> theCurrentTemp.entry[iy][jx].chi2min[1] >> theCurrentTemp.entry[iy][jx].chi2avg[1]>> theCurrentTemp.entry[iy][jx].chi2min[2] >> theCurrentTemp.entry[iy][jx].chi2avg[2]
 				>> theCurrentTemp.entry[iy][jx].chi2min[3] >> theCurrentTemp.entry[iy][jx].chi2avg[3];
 				
-				if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 6, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 6, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 				
 			   db >> theCurrentTemp.entry[iy][jx].spare[0] >> theCurrentTemp.entry[iy][jx].spare[1] >> theCurrentTemp.entry[iy][jx].spare[2] >> theCurrentTemp.entry[iy][jx].spare[3]
 				>> theCurrentTemp.entry[iy][jx].spare[4] >> theCurrentTemp.entry[iy][jx].spare[5] >> theCurrentTemp.entry[iy][jx].spare[6] >> theCurrentTemp.entry[iy][jx].spare[7]
 				>> theCurrentTemp.entry[iy][jx].spare[8]  >> theCurrentTemp.entry[iy][jx].spare[9];
 				
-				if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 7, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 7, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 				
 			   db >> theCurrentTemp.entry[iy][jx].spare[10] >> theCurrentTemp.entry[iy][jx].spare[11] >> theCurrentTemp.entry[iy][jx].spare[12] >> theCurrentTemp.entry[iy][jx].spare[13]
 				>> theCurrentTemp.entry[iy][jx].spare[14] >> theCurrentTemp.entry[iy][jx].spare[15] >> theCurrentTemp.entry[iy][jx].spare[16] >> theCurrentTemp.entry[iy][jx].spare[17]
 				>> theCurrentTemp.entry[iy][jx].spare[18]  >> theCurrentTemp.entry[iy][jx].spare[19];
 				
-				if(db.fail()) {LOGERROR("SiPixelTemplate2D") << "Error reading file 8, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
+				if(db.fail()) {LOGERROR("SiPixel2DTemplate2D") << "Error reading file 8, no template load, run # " << theCurrentTemp.entry[iy][jx].runnum << ENDL; return false;}
 					
 				}
-		}
+			}
 			
-		// Add this template to the store
+
+		
+				
+// Add this template to the store
 		
 		thePixelTemp_.push_back(theCurrentTemp);
-	}
+		}
 	return true;
 	
 } // TempInit 
@@ -402,7 +404,6 @@ bool SiPixelTemplate2D::xytemp(int id, float cotalpha, float cotbeta, float locB
 			
 			index_id_ = -1;
 			for(i=0; i<(int)thePixelTemp_.size(); ++i) {
-				
 				if(id == thePixelTemp_[i].head.ID) {
 				 
 					index_id_ = i;

@@ -43,8 +43,9 @@ class StripCPEfromTemplate : public StripCPE
   
  private:
 
+
   std::vector< SiStripTemplateStore > theStripTemp_;
- 
+
   bool use_template_reco;
   int template_reco_speed;
   int SID;

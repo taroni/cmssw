@@ -20,6 +20,7 @@ version = sys.argv[3]
 # Removed all but mag = 3.8 for testing.
 if ( MagFieldValue==3.8 or MagFieldValue==38 ):
     MagFieldString = '38'
+<<<<<<< HEAD
     file_path = "CalibTracker/SiPixelESProducers/data/template_summary2D_"
     suffix = ".out"
     files_to_upload = cms.vstring(
@@ -146,6 +147,20 @@ if ( MagFieldValue==3.8 or MagFieldValue==38 ):
 #	file_path + "zp0941" + suffix,
 	# Array position 51: Side 2, Disk 2, Panel 2, Module 3
 #	file_path + "zp0942" + suffix
+=======
+    file_path = "CalibTracker/SiPixelESProducers/data/template2D_IOV5/template_summary2D_"
+    suffix = ".out"
+    files_to_upload = cms.vstring(
+	file_path + "zp2840" + suffix,
+	file_path + "zp2940" + suffix,	
+	file_path + "zp3641" + suffix,
+	file_path + "zp3741" + suffix,
+	file_path + "zp3242" + suffix,
+	file_path + "zp3342" + suffix,
+	file_path + "zp0940" + suffix,
+	file_path + "zp0941" + suffix,
+	file_path + "zp0942" + suffix
+>>>>>>> templateupdates
 )
 ### We must now ID each of these templates. Match each ID "zp####" in the appropriate array position below:
     theTemplateIds = cms.vuint32(2940,2940,2940,2940,2840,2840,2840,2840,3741,3741,3741,
@@ -167,7 +182,11 @@ else :
 template_base = 'SiPixel2DTemplateDBObject' + MagFieldString + 'T'
 #theTemplateBaseString = cms.string(template_base)
 
+<<<<<<< HEAD
 print '\nUploading %s%s with record SiPixel2DTemplateDBObjectRcd in file siPixel2DTemplates%sT.db\n' % (template_base,version,MagFieldString)
+=======
+print '\nUploading %s%s with record SiPixel2DTemplateDBObjectRcd in file siPixel2DTemplates%sT_IOV5.db\n' % (template_base,version,MagFieldString)
+>>>>>>> templateupdates
 
 process.source = cms.Source("EmptyIOVSource",
                             timetype = cms.string('runnumber'),
@@ -186,7 +205,11 @@ process.PoolDBOutputService = cms.Service("PoolDBOutputService",
     authenticationPath = cms.untracked.string('.')
     ),
                                           timetype = cms.untracked.string('runnumber'),
+<<<<<<< HEAD
                                           connect = cms.string('sqlite_file:siPixel2DTemplates' + MagFieldString + 'T.db'),
+=======
+                                          connect = cms.string('sqlite_file:siPixel2DTemplates' + MagFieldString + 'T_IOV5.db'),
+>>>>>>> templateupdates
                                           toPut = cms.VPSet(cms.PSet(
     record = cms.string('SiPixel2DTemplateDBObjectRcd'),
     tag = cms.string(template_base + version)
