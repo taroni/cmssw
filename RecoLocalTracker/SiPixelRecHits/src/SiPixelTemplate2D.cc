@@ -357,6 +357,7 @@ bool SiPixelTemplate2D::pushfile(const SiPixel2DTemplateDBObject& dbobject, std:
 		
 		thePixelTemp_.push_back(theCurrentTemp);
 		}
+
 	return true;
 	
 } // TempInit 
@@ -406,7 +407,7 @@ bool SiPixelTemplate2D::xytemp(int id, float cotalpha, float cotbeta, float locB
 			index_id_ = -1;
 			for(i=0; i<(int)thePixelTemp_.size(); ++i) {
 				if(id == thePixelTemp_[i].head.ID) {
-				  std::cout << __LINE__ << " " << id << " " << index_id_ << std::endl;
+				 
 					index_id_ = i;
 					id_current_ = id;
 					
