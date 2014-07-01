@@ -9,6 +9,7 @@
 #include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 
+
 #include "DataFormats/DetId/interface/DetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
@@ -116,11 +117,11 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 
 	for(TrackerGeometry::DetUnitContainer::const_iterator it = pDD->detUnits().begin(); it != pDD->detUnits().end(); it++){	
 		if( dynamic_cast<PixelGeomDetUnit const*>((*it))!=0){
+
 			// Here is the actual looping step over all DetIds:				
 			DetId detid=(*it)->geographicalId();
 
 			unsigned int layer=0, disk=0, side=0, blade=0, panel=0, module=0;
-
 					
 			// Now we sort them into the Barrel and Endcap:
 			if(detid.subdetId() == 1) {
@@ -270,7 +271,6 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 			       	side=pdetId.side(); //size=1 for -z, 2 for +z
 			       	panel=pdetId.panel(); //panel=1,2	
 		        	module=pdetId.module(); // plaquette
-				//short temp123abc = (short) theTemplIds[1];
 				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelEndcap)){
 					if (side ==1 ){
 						if (disk == 1){
