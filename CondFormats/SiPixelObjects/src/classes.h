@@ -15,6 +15,7 @@
 #include "CondFormats/SiPixelObjects/interface/SiPixelCalibConfiguration.h"
 #include "CondFormats/SiPixelObjects/interface/SiPixelQuality.h"
 #include "CondFormats/SiPixelObjects/interface/PixelDCSObject.h"
+
 template class PixelDCSObject<bool>;
 template class PixelDCSObject<float>;
 template class PixelDCSObject<CaenChannel>;
