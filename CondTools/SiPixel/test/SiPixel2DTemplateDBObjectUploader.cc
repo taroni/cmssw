@@ -9,6 +9,7 @@
 #include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 
+
 #include "DataFormats/DetId/interface/DetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
@@ -115,33 +116,18 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 	}
 
 	for(TrackerGeometry::DetUnitContainer::const_iterator it = pDD->detUnits().begin(); it != pDD->detUnits().end(); it++){	
-<<<<<<< HEAD
-		if( dynamic_cast<PixelGeomDetUnit const*>((*it))!=0){
-			// Here is the actual looping step over all DetIds:				
-			DetId detid=(*it)->geographicalId();
-
-			unsigned int layer=0, disk=0, ladder=0, zindex=0, side=0, blade=0, panel=0, module=0;
-=======
-		if( dynamic_cast<PixelGeomDetUnit*>((*it))!=0){
+		if( dynamic_cast<PixelGeomDetUnit const *>((*it))!=0){
 			// Here is the actual looping step over all DetIds:				
 			DetId detid=(*it)->geographicalId();
 
 			unsigned int layer=0, disk=0, side=0, blade=0, panel=0, module=0;
->>>>>>> templateupdates
 					
 			// Now we sort them into the Barrel and Endcap:
 			if(detid.subdetId() == 1) {
 				PXBDetId pdetId = PXBDetId(detid);
-<<<<<<< HEAD
-				unsigned int detTypeP=pdetId.det();
-				unsigned int subidP=pdetId.subdetId();
-				layer=pdetId.layer();
-				ladder=pdetId.ladder();
-=======
 				//unsigned int detTypeP=pdetId.det();
 				//unsigned int subidP=pdetId.subdetId();
 				layer=pdetId.layer();
->>>>>>> templateupdates
 				module=pdetId.module();
 				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelBarrel)){
 					if (layer == 1) {
@@ -284,11 +270,6 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 			       	side=pdetId.side(); //size=1 for -z, 2 for +z
 			       	panel=pdetId.panel(); //panel=1,2	
 		        	module=pdetId.module(); // plaquette
-<<<<<<< HEAD
-				short temp123abc = (short) theTemplIds[1];
-=======
-				//short temp123abc = (short) theTemplIds[1];
->>>>>>> templateupdates
 				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelEndcap)){
 					if (side ==1 ){
 						if (disk == 1){
@@ -465,12 +446,6 @@ SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::
 				}
 			}
 
-<<<<<<< HEAD
-			short mapnum;
-			mapnum = (*obj).getTemplateID( detid.rawId());
-=======
-
->>>>>>> templateupdates
 			//cout<<"The DetID: "<<detid.rawId()<<" is mapped to the template: "<<mapnum<<".\n\n";
 
 			//else 
