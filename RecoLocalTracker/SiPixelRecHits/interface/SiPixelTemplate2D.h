@@ -110,12 +110,9 @@ class SiPixelTemplate2D {
                                   // file with the index (int) filenum
 								  
 #ifndef SI_PIXEL_TEMPLATE_STANDALONE
-<<<<<<< HEAD
+
   static bool pushfile(const SiPixel2DTemplateDBObject& dbobject, std::vector< SiPixelTemplateStore2D > & thePixelTemp_);     // load the private store with info from db
-=======
-  //bool pushfile(const SiPixelTemplateDBObject& dbobject);     // load the private store with info from db
-  bool pushfile(const SiPixel2DTemplateDBObject& dbobject);     // load the private store with info from db
->>>>>>> templateupdates
+
 #endif
   
 	
