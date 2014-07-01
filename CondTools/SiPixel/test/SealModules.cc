@@ -26,7 +26,7 @@
 
 #include "CondTools/SiPixel/test/SiPixelTemplateDBObjectReader.h"
 #include "CondTools/SiPixel/test/SiPixelTemplateDBObjectUploader.h"
-#include "CondTools/SiPixel/test/SiPixel2DTemplateDBObjectUploader.h"
+
 #include "CondTools/SiPixel/test/SiPixelFakeTemplateDBSourceReader.h"
 
 #include "CondTools/SiPixel/test/SiPixelGenErrorDBObjectReader.h"
@@ -76,4 +76,4 @@ DEFINE_FWK_MODULE(SiPixelGenErrorDBObjectReader);
 DEFINE_FWK_MODULE(SiPixelGenErrorDBObjectUploader);
 DEFINE_FWK_MODULE(SiPixelFakeGenErrorDBSourceReader);
 DEFINE_FWK_MODULE(PixelDCSObjectReader<PixelCaenChannelRcd>);
-DEFINE_FWK_MODULE(SiPixel2DTemplateDBObjectUploader);
+
