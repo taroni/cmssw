@@ -20,9 +20,9 @@ process.load('Configuration/StandardSequences/DigiToRaw_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(1000)
 )
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
+process.MessageLogger.cerr.FwkReport.reportEvery = 100
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
@@ -41,7 +41,7 @@ process.StripCPEfromTemplateESProducer.UseTemplateReco = True
 # Include the latest pixel templates, which are not in DB. 
 # These are to be used for pixel splitting.
 process.load('RecoLocalTracker.SiPixelRecHits.PixelCPETemplateReco_cfi')
-process.templates.LoadTemplatesFromDB = False
+process.templates.LoadTemplatesFromDB = True
 
 # This is the default speed. Recommended.
 process.StripCPEfromTrackAngleESProducer.TemplateRecoSpeed = 0;
@@ -118,7 +118,7 @@ process.load("RecoTracker.TrackProducer.TrackRefitters_cff")
 
 process.RECOoutput = cms.OutputModule("PoolOutputModule",
     outputCommands = process.FEVTDEBUGEventContent.outputCommands,
-    fileName = cms.untracked.string('/tmp/taroni/ZpTauTau8TeV_simsplit_71X_test.root'),
+    fileName = cms.untracked.string('ZpTauTau8TeV_simsplit_71X_test_2.root'),
     dataset = cms.untracked.PSet(
         #filterName = cms.untracked.string(''),
         dataTier = cms.untracked.string('RECO')
