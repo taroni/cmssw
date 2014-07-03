@@ -351,14 +351,15 @@ TrackClusterSplitter::produce(edm::Event& iEvent, const edm::EventSetup& iSetup)
   using namespace edm;
   if (!Loaded){
     edm::ESHandle<SiPixelTemplateDBObject> templateDBobject;
-    iSetup.get<SiPixelTemplateDBObjectRcd>().get(templateDBobject);
-    templateDBobject_ = templateDBobject.product();
     
     edm::ESHandle<SiPixel2DTemplateDBObject> templateDBobject2D;
-    iSetup.get<SiPixel2DTemplateDBObjectRcd>().get(templateDBobject2D);
-    templateDBobject2D_ = templateDBobject2D.product();
     if (LoadTemplatesFromDB_)	    
       {
+	iSetup.get<SiPixelTemplateDBObjectRcd>().get(templateDBobject);
+	templateDBobject_ = templateDBobject.product();
+	iSetup.get<SiPixel2DTemplateDBObjectRcd>().get(templateDBobject2D);
+	templateDBobject2D_ = templateDBobject2D.product();
+
 	SiPixelTemplate::pushfile( *templateDBobject.product(), thePixelTemp_ );
 	SiPixelTemplate2D::pushfile(  *templateDBobject2D.product(), thePixelTemp2D_ );
 
