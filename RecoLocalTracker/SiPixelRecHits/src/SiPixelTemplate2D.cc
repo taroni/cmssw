@@ -58,7 +58,7 @@ bool SiPixelTemplate2D::pushfile(int filenum, std::vector< SiPixelTemplateStore2
 	const char *tempfile;
 	//	char title[80]; remove this
     char c;
-	const int code_version={17};
+	const int code_version={16};
 	
 	
 	
@@ -78,6 +78,7 @@ bool SiPixelTemplate2D::pushfile(int filenum, std::vector< SiPixelTemplateStore2
 	tout << "template_summary2D_zp" << std::setw(4) << std::setfill('0') << std::right << filenum << ".out" << std::ends;
 	std::string tempf = tout.str();
 	tempfile = tempf.c_str();
+
 #endif
 	
 	//  open the template file 

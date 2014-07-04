@@ -1413,11 +1413,11 @@ void TrackClusterSplitter::splitCluster<SiPixelCluster> (const SiPixelClusterWit
 	    {
 	      // For barrel use template id 40 and for endcaps use template id 41
 	      int ID = -99999;
-	      int ID2D = -99999;
+	      
 	      if (LoadTemplatesFromDB_){
 		
-      		ID = templateDBobject_->getTemplateID(theDet->geographicalId());
-      		ID2D = templateDBobject2D_->getTemplateID(theDet->geographicalId());
+      		ID = templateDBobject2D_->getTemplateID(theDet->geographicalId());//templateDBobject_
+      		//ID2D = templateDBobject2D_->getTemplateID(theDet->geographicalId());
 		
 		//cout << "1D template ID " << ID <<endl;
 		//cout << "2D template ID " << ID2D <<endl;
@@ -1710,14 +1710,14 @@ void TrackClusterSplitter::splitCluster<SiPixelCluster> (const SiPixelClusterWit
 			   
    
 			  bool template_OK 
-			    = templ2D_.xytemp(ID2D, cotalpha_, cotbeta_, 
+			    = templ2D_.xytemp(ID, cotalpha_, cotbeta_, 
 					      xrecp1, yrecp1, 
 					      ydouble, xdouble, 
 					      template2d1);
 			  
 			  template_OK 
 			    = template_OK && 
-			    templ2D_.xytemp(ID2D, cotalpha_, cotbeta_, 
+			    templ2D_.xytemp(ID, cotalpha_, cotbeta_, 
 					    xrecp2, yrecp2, 
 					    ydouble, xdouble, 
 					    template2d2);
