@@ -41,7 +41,7 @@ process.StripCPEfromTemplateESProducer.UseTemplateReco = True
 # Include the latest pixel templates, which are not in DB. 
 # These are to be used for pixel splitting.
 process.load('RecoLocalTracker.SiPixelRecHits.PixelCPETemplateReco_cfi')
-process.templates.LoadTemplatesFromDB = False
+process.templates.LoadTemplatesFromDB = True
 
 # This is the default speed. Recommended.
 process.StripCPEfromTrackAngleESProducer.TemplateRecoSpeed = 0;
@@ -95,7 +95,7 @@ process.StripCPEfromTemplateESProducer.UseTemplateReco = True
 # Include the latest pixel templates, which are not in DB. 
 # These are to be used for pixel splitting.
 process.load('RecoLocalTracker.SiPixelRecHits.PixelCPETemplateReco_cfi')
-process.templates.LoadTemplatesFromDB = False
+process.templates.LoadTemplatesFromDB = True
 
 # This is the default speed. Recommended.
 process.StripCPEfromTrackAngleESProducer.TemplateRecoSpeed = 0;
@@ -121,7 +121,12 @@ process.options = cms.untracked.PSet(
 
 )
 from RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup_cff import customizeTracking
-customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits')
+customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits','splitSiPixelClustersCache')
+process.splitSiPixelClustersCache = cms.EDProducer( "SiPixelClusterShapeCacheProducer",
+                                                  src = cms.InputTag( "splitClusters" ),
+                                                  onDemand = cms.bool( False )
+)
+
 
 process.load("RecoTracker.TrackProducer.TrackRefitters_cff")
 
@@ -143,7 +148,9 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
 process.dump = cms.EDAnalyzer("EventContentAnalyzer")
 # Other statements
 
-process.GlobalTag.globaltag = 'MC_71_V1::All'
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
 
 process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelHighTof')
 process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelLowTof')
@@ -163,8 +170,8 @@ from RecoLocalCalo.HcalRecProducers.HBHEIsolatedNoiseReflagger_cfi import *
 process.hbhereco.hbheInput= cms.InputTag("hbheprereco::SPLIT")
 
 # Path and EndPath definitions
-process.pre_init  = cms.Path(cms.Sequence(process.pdigi*process.SimL1Emulator*process.DigiToRaw))
-process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.recopixelvertexing))
+#process.pre_init  = cms.Path(cms.Sequence(process.pdigi*process.SimL1Emulator*process.DigiToRaw))
+process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.siPixelClusterShapeCache*process.recopixelvertexing))
 process.rechits_step=cms.Path(process.siPixelRecHits)
 process.dump_step = cms.Path(process.dump)
 process.splitClusters_step=cms.Path(process.mix+process.splitClusters)

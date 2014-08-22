@@ -24,17 +24,6 @@ process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
     fileNames = cms.untracked.vstring(
         'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTT_1500_8TeV_Tauola_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.root'
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_0.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_1.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_2.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_3.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_4.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_5.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_6.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_7.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_8.root',
-#    'root://eoscms//eos/cms/store/user/taroni/ClusterSplitting/ZpTauTau8TeV/GEN-SIM-RAW/ZpTauTau_GEN-SIM-RAW_9.root'
-#        'file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/CMSSW_7_1_X_2014-03-18-0200/src/ZpTT_1500_8TeV_Tauola_cfi_py_GEN_SIM_DIGI_L1_DIGI2RAW_HLT.root'
     ),
 
 )
@@ -49,7 +38,7 @@ process.StripCPEfromTemplateESProducer.UseTemplateReco = True
 # Include the latest pixel templates, which are not in DB. 
 # These are to be used for pixel splitting.
 process.load('RecoLocalTracker.SiPixelRecHits.PixelCPETemplateReco_cfi')
-process.templates.LoadTemplatesFromDB = False
+process.templates.LoadTemplatesFromDB = True
 
 # This is the default speed. Recommended.
 process.StripCPEfromTrackAngleESProducer.TemplateRecoSpeed = 0;
@@ -103,7 +92,7 @@ process.StripCPEfromTemplateESProducer.UseTemplateReco = True
 # Include the latest pixel templates, which are not in DB. 
 # These are to be used for pixel splitting.
 process.load('RecoLocalTracker.SiPixelRecHits.PixelCPETemplateReco_cfi')
-process.templates.LoadTemplatesFromDB = False
+process.templates.LoadTemplatesFromDB = True
 
 # This is the default speed. Recommended.
 process.StripCPEfromTrackAngleESProducer.TemplateRecoSpeed = 0;
@@ -124,7 +113,13 @@ process.Vertex2TracksDefault = AssociationMaps.clone(
 # cluster splitting (instead of the default clusters and rechits)
 #process.load('RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup2_cff')
 from RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup_cff import customizeTracking
-customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits')
+customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits','splitSiPixelClustersCache')
+
+process.splitSiPixelClustersCache = cms.EDProducer( "SiPixelClusterShapeCacheProducer",
+                                                  src = cms.InputTag( "splitClusters" ),
+                                                  onDemand = cms.bool( False )
+)
+
 
 process.fullreco = cms.Sequence(process.globalreco*process.highlevelreco)
 process.Globalreco = cms.Sequence(process.globalreco)
@@ -172,12 +167,15 @@ process.RECOoutput = cms.OutputModule("PoolOutputModule",
 process.dump = cms.EDAnalyzer("EventContentAnalyzer")
 # Other statements
 
-process.GlobalTag.globaltag = 'MC_71_V1::All'
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+from Configuration.AlCa.GlobalTag import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
+
 
 
 
 # Path and EndPath definitions
-process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.recopixelvertexing))
+process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.siPixelClusterShapeCache*process.recopixelvertexing))
 process.dump_step = cms.Path(process.dump)
 process.splitClusters_step=cms.Path(process.splitClusters)
 process.newrechits_step=cms.Path(process.newrechits)
