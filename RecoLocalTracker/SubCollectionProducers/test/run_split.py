@@ -14,6 +14,8 @@ process.load('Configuration.StandardSequences.RawToDigi_cff')
 process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.load("SimGeneral.MixingModule.mixNoPU_cfi")
+
 
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(10)
@@ -171,7 +173,21 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelHighTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelEndcapHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelEndcapLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTECHighTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTECLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIBHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIBLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIDHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIDLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTOBHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTOBLowTof')
 
+from RecoLocalCalo.HcalRecProducers.HBHEIsolatedNoiseReflagger_cfi import *
+process.hbhereco.hbheInput= cms.InputTag("hbheprereco::SPLIT")
 
 
 # Path and EndPath definitions
