@@ -177,7 +177,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:startup', '')
 # Path and EndPath definitions
 process.init_step = cms.Path(cms.Sequence(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.siPixelClusterShapeCache*process.recopixelvertexing))
 process.dump_step = cms.Path(process.dump)
-process.splitClusters_step=cms.Path(process.splitClusters)
+process.splitClusters_step=cms.Path(process.mix+process.splitClusters+process.splitSiPixelClustersCache)
 process.newrechits_step=cms.Path(process.newrechits)
 process.fullreco_step=cms.Path(process.fullreco)
 process.endjob_step = cms.EndPath(process.endOfProcess)
