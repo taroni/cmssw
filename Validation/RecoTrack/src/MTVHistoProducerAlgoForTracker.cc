@@ -1079,17 +1079,17 @@ void MTVHistoProducerAlgoForTracker::fill_recoAssociated_simTrack_histos(int cou
   	double jangle = sqrt(dtheta*dtheta+dphi*dphi);
   	if (jangle<calcdR) calcdR=jangle;
       }
-      
-      for (unsigned int f=0; f<dRintervals[count].size()-1; f++){
-  	if (calcdR>dRintervals[count][f]&&
-  	    calcdR<=dRintervals[count][f+1]) {
-  	  totSIMdR[count][f]++;
-  	  if (rtsize!=0) {
-  	    totASSdR[count][f]++;
-  	  }
-  	}
+    }  
+    for (unsigned int f=0; f<dRintervals[count].size()-1; f++){
+      if (calcdR>dRintervals[count][f]&&
+	  calcdR<=dRintervals[count][f+1]) {
+	totSIMdR[count][f]++;
+	if (rtsize!=0) {
+	  totASSdR[count][f]++;
+	}
       }
     }
+    // the  for (TrackingParticleCollection::size_type s=0;s<tPCeff.size();s++) look was closing here before. 
   }
 
   if((*TpSelectorForEfficiencyVsEta)(tp)){

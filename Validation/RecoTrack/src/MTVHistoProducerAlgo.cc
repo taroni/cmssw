@@ -27,6 +27,7 @@ void MTVHistoProducerAlgo::fillPlotFromVectors(MonitorElement* h,
       if (type=="effic"){
 	value = ((double) numerator[j])*1./((double) denominator[j]);
         err = sqrt( value*(1-value)/(double) denominator[j] );
+	
       } else if (type=="fakerate"){
 	value = 1-((double) numerator[j])*1./((double) denominator[j]);
         err = sqrt( value*(1-value)/(double) denominator[j] );
