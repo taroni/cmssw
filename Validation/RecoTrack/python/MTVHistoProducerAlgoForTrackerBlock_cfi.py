@@ -12,6 +12,8 @@ MTVHistoProducerAlgoForTrackerBlock = cms.PSet(
     TpSelectorForEfficiencyVsPt   = TpSelectorForEfficiencyVsPtBlock,
     TpSelectorForEfficiencyVsVTXR = TpSelectorForEfficiencyVsVTXRBlock,
     TpSelectorForEfficiencyVsVTXZ = TpSelectorForEfficiencyVsVTXZBlock,
+    
+    TpSelectorForEfficiencyVsdR   = TpSelectorForEfficiencyVsdRBlock,
 
     ### gp selectors for efficiency
     generalGpSelector             = generalGpSelectorBlock,
@@ -29,9 +31,9 @@ MTVHistoProducerAlgoForTrackerBlock = cms.PSet(
     nintEta = cms.int32(50),
     useFabsEta = cms.bool(False),
     #
-    minPt = cms.double(0.1),
+    minPt = cms.double(0.9),
     maxPt = cms.double(1000),
-    nintPt = cms.int32(40),
+    nintPt = cms.int32(50),
     useInvPt = cms.bool(False),
     useLogPt=cms.untracked.bool(True),
     #                               
@@ -94,6 +96,10 @@ MTVHistoProducerAlgoForTrackerBlock = cms.PSet(
 
     dzRes_rangeMin = cms.double(-0.05),
     dzRes_rangeMax = cms.double(+0.05),
-    dzRes_nbin = cms.int32(150),                                   
+    dzRes_nbin = cms.int32(150),  
+
+    nintdR = cms.int32(25),
+    mindR = cms.double(0.0),
+    maxdR = cms.double(0.025),
 
 )

@@ -46,6 +46,12 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
 					   double dxy, double dz, int nSimHits,
 					   const reco::Track* track,
 					   int numVertices, double vertz);
+  void fill_recoAssociated_simTrack_histos(int count,
+					   const TrackingParticle& tp,
+					   const TrackingParticle::Vector& momentumTP, const TrackingParticle::Point& vertexTP,
+					   double dxy, double dz, int nSimHits,
+					   const reco::Track* track,
+					   int numVertices, double vertz,edm::Handle<TrackingParticleCollection>  TPCollectionHeff, unsigned int tpsize);
 
   void fill_recoAssociated_simTrack_histos(int count,
 					   const reco::GenParticle& tp,
@@ -66,6 +72,18 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
 				     int tpbunchcrossing,
 				     int nSimHits,
 				     double sharedFraction);
+  void fill_generic_recoTrack_histos(int count,
+				     const reco::Track& track,
+				     const math::XYZPoint& bsPosition,
+				     bool isMatched,
+				     bool isSigMatched,
+				     bool isChargeMatched,
+				     int numAssocRecoTracks,
+				     int numVertices,
+				     int tpbunchcrossing,
+				     int nSimHits,
+				     double sharedFraction,
+ 				     edm::Handle<edm::View<reco::Track> > trackCollection, unsigned int tpsize);
 
   void fill_dedx_recoTrack_histos(int count, edm::RefToBase<reco::Track>& trackref, const std::vector< edm::ValueMap<reco::DeDxData> >& v_dEdx);
   //  void fill_dedx_recoTrack_histos(reco::TrackRef trackref, std::vector< edm::ValueMap<reco::DeDxData> > v_dEdx);
@@ -85,6 +103,13 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
 					 int chargeTP,
 					 const reco::Track& track,
 					 const math::XYZPoint& bsPosition);
+  void fill_ResoAndPull_recoTrack_histos(int count,
+					 const TrackingParticle::Vector& momentumTP,
+					 const TrackingParticle::Point& vertexTP,
+					 int chargeTP,
+					 const reco::Track& track,
+					 const math::XYZPoint& bsPosition,
+ 					 edm::Handle<edm::View<reco::Track> >  trackCollection);
 
   void finalHistoFits(int counter);
 
@@ -121,6 +146,7 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
   TrackingParticleSelector* TpSelectorForEfficiencyVsPt;
   TrackingParticleSelector* TpSelectorForEfficiencyVsVTXR;
   TrackingParticleSelector* TpSelectorForEfficiencyVsVTXZ;
+  TrackingParticleSelector* TpSelectorForEfficiencyVsdR;
 
   GenParticleCustomSelector* generalGpSelector;
   GenParticleCustomSelector* GpSelectorForEfficiencyVsEta;
@@ -141,6 +167,7 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
   double minZpos, maxZpos;  int nintZpos;
   double minDeDx, maxDeDx;  int nintDeDx;
   double minVertcount, maxVertcount;  int nintVertcount;
+  double mindR, maxdR, nintdR;
 
   //
   double ptRes_rangeMin,ptRes_rangeMax; int ptRes_nbin;
@@ -187,6 +214,7 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
   std::vector<MonitorElement*> h_effic_PU_eta, h_effic_PU_vertcount, h_effic_PU_zpos;
   std::vector<MonitorElement*> h_con_eta, h_con_vertcount, h_con_zpos;
 
+  std::vector<MonitorElement*> h_efficdR, h_fakeratedR;
 
   // dE/dx
   // in the future these might become an array
@@ -221,6 +249,8 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
     h_STRIPlayersWithMeas_eta, h_STRIPlayersWith1dMeas_eta, h_STRIPlayersWith2dMeas_eta;
 
 
+  std::vector< std::vector<double> > dRintervals;
+  std::vector<double> dRintervalsv;
   std::vector< std::vector<double> > etaintervals;
   std::vector< std::vector<double> > pTintervals;
   std::vector< std::vector<double> > phiintervals;
@@ -235,6 +265,7 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
   std::vector< std::vector<int> > totSIM_phi,totREC_phi,totASS_phi,totASS2_phi,totloop_phi,totmisid_phi;
   std::vector< std::vector<int> > totSIM_dxy,totREC_dxy,totASS_dxy,totASS2_dxy,totloop_dxy,totmisid_dxy;
   std::vector< std::vector<int> > totSIM_dz,totREC_dz,totASS_dz,totASS2_dz,totloop_dz,totmisid_dz;
+  std::vector< std::vector<int> > totSIMdR,totRECdR, totASSdR, totASS2dR;
 
   std::vector< std::vector<int> > totSIM_vertpos,totASS_vertpos,totSIM_zpos,totASS_zpos;
   std::vector< std::vector<int> > totSIM_vertcount_entire,totASS_vertcount_entire,totREC_vertcount_entire,totASS2_vertcount_entire,totASS2_vertcount_entire_signal;
@@ -260,6 +291,10 @@ class MTVHistoProducerAlgoForTracker: public MTVHistoProducerAlgo {
   //---- second set of histograms (originally not used by the SeedGenerator)
   //1D
   std::vector<MonitorElement*> h_nchi2, h_nchi2_prob, h_losthits, h_nmisslayers_inner, h_nmisslayers_outer;
+
+  std::vector<MonitorElement*> ptres_vs_dR, phires_vs_dR, cotThetares_vs_dR, dxyres_vs_dR, dzres_vs_dR;
+  std::vector<MonitorElement*> h_ptmeanhdR, h_phimeanhdR, h_cotThetameanhdR,h_dxymeanhdR, h_dzmeanhdR;
+  std::vector<MonitorElement*> h_dxyrmshdR, h_ptrmshdR, h_dzrmshdR, h_phirmshdR, h_cotThetarmshdR;
 
   //2D
   std::vector<MonitorElement*> chi2_vs_nhits, etares_vs_eta;
