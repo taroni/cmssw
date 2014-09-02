@@ -80,7 +80,7 @@ int SiStripTemplateSplit::StripTempSplit(int id, float cotalpha, float cotbeta, 
     // Local variables 
 	int i, j, k, binq, binqerr, midpix;
 	int fxpix, nxpix, lxpix, logxpx, shiftx;
-	int nclusx;
+	int nclusx, clslenx;;
 	int nxbin, xcbin, minbinj, minbink;
 	int deltaj, jmin, jmax, kmin, kmax, km, fxbin, lxbin, djx;
 	float sxthr, delta, sigma, pseudopix, xsize, qscale;
@@ -88,6 +88,7 @@ int SiStripTemplateSplit::StripTempSplit(int id, float cotalpha, float cotbeta, 
 	float originx, bias, maxpix;
 	double chi2x, meanx, chi2xmin, chi21max;
 	double hchi2, hndof;
+	//double q05;
 	double prvav, mpv, sigmaQ, kappa, xvav, beta2;
 	float xsum[BSXSIZE];
 	float xsig2[BSXSIZE];
@@ -120,7 +121,7 @@ int SiStripTemplateSplit::StripTempSplit(int id, float cotalpha, float cotbeta, 
 	// Define size of pseudopixel
 	
 	pseudopix = templ.s50();
-	
+	//q05 = 0.05f*pseudopix;
 	// Get charge scaling factor
 	
 	qscale = templ.qscale();
@@ -187,7 +188,23 @@ int SiStripTemplateSplit::StripTempSplit(int id, float cotalpha, float cotbeta, 
 		
 	   return 7; 
 	}
-	
+	// If cluster is smaller than interpolated template size, technique fails
+    
+	clslenx = (int)(templ.clslenx()+0.5f);
+ 	
+ 	if(nxpix < clslenx) {
+	  
+	  LOGDEBUG("SiStripTemplateReco") << "x-length of pixel cluster is smaller than the expected single cluster size" << ENDL;
+	  if (theVerboseLevel > 2) {
+	    LOGDEBUG("SiStripTemplateReco") << "xsum[] = ";
+	    for(i=0; i<BSXSIZE-1; ++i) {LOGDEBUG("SiStripTemplateReco") << xsum[i] << ", ";}
+	    LOGDEBUG("SiStripTemplateReco") << ENDL;
+	  }
+	  
+	  return 8;
+ 	}
+ 	
+
 	// next, center the cluster on template center if necessary   
 	
 	midpix = (fxpix+lxpix)/2;

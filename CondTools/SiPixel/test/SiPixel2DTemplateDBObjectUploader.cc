@@ -1,5 +1,5 @@
-#include "CondTools/SiPixel/test/SiPixelTemplateDBObjectUploader.h"
-#include "CondFormats/DataRecord/interface/SiPixelTemplateDBObjectRcd.h"
+#include "CondTools/SiPixel/test/SiPixel2DTemplateDBObjectUploader.h"
+#include "CondFormats/DataRecord/interface/SiPixel2DTemplateDBObjectRcd.h"
 
 #include "CondCore/DBOutputService/interface/PoolDBOutputService.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
@@ -8,6 +8,7 @@
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 #include "Geometry/TrackerGeometryBuilder/interface/PixelGeomDetUnit.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
+
 
 #include "DataFormats/DetId/interface/DetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
@@ -19,7 +20,7 @@
 
 using namespace std;
 
-SiPixelTemplateDBObjectUploader::SiPixelTemplateDBObjectUploader(const edm::ParameterSet& iConfig):
+SiPixel2DTemplateDBObjectUploader::SiPixel2DTemplateDBObjectUploader(const edm::ParameterSet& iConfig):
 	theTemplateCalibrations( iConfig.getParameter<vstring>("siPixelTemplateCalibrations") ),
 	theTemplateBaseString( iConfig.getParameter<std::string>("theTemplateBaseString") ),
 	theVersion( iConfig.getParameter<double>("Version") ),
@@ -29,20 +30,20 @@ SiPixelTemplateDBObjectUploader::SiPixelTemplateDBObjectUploader(const edm::Para
 }
 
 
-SiPixelTemplateDBObjectUploader::~SiPixelTemplateDBObjectUploader()
+SiPixel2DTemplateDBObjectUploader::~SiPixel2DTemplateDBObjectUploader()
 {
 }
 
 void 
-SiPixelTemplateDBObjectUploader::beginJob()
+SiPixel2DTemplateDBObjectUploader::beginJob()
 {
 }
 
 void
-SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::EventSetup& es)
+SiPixel2DTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::EventSetup& es)
 {
 	//--- Make the POOL-ORA object to store the database object
-	SiPixelTemplateDBObject* obj = new SiPixelTemplateDBObject;
+	SiPixel2DTemplateDBObject* obj = new SiPixel2DTemplateDBObject;
 
 	// Local variables 
 	const char *tempfile;
@@ -50,7 +51,8 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 	
 	// Set the number of templates to be passed to the dbobject
 	obj->setNumOfTempl(theTemplateCalibrations.size());
-
+	cout << obj->numOfTempl() << endl;
+	cout << theVersion << endl;
 	// Set the version of the template dbobject - this is an external parameter
 	obj->setVersion(theVersion);
 
@@ -68,7 +70,7 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 
 			// Local variables 
 			char title_char[80], c;
-			SiPixelTemplateDBObject::char2float temp;
+			SiPixel2DTemplateDBObject::char2float temp;
 			float tempstore;
 			int iter,j;
 			
@@ -100,7 +102,7 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 		}
 		else {
 			// If file didn't open, report this
-			//edm::LogError("SiPixelTemplateDBObjectUploader") << "Error opening File" << tempfile;
+			//edm::LogError("SiPixel2DTemplateDBObjectUploader") << "Error opening File" << tempfile;
 			cout << "Error opening File " << tempfile << "\n";
 		}
 	}
@@ -268,7 +270,6 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 			       	side=pdetId.side(); //size=1 for -z, 2 for +z
 			       	panel=pdetId.panel(); //panel=1,2	
 		        	module=pdetId.module(); // plaquette
-				//short temp123abc = (short) theTemplIds[1];
 				if(detid.subdetId() == static_cast<int>(PixelSubdetector::PixelEndcap)){
 					if (side ==1 ){
 						if (disk == 1){
@@ -445,9 +446,7 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 				}
 			}
 
-			short mapnum;
-			mapnum = (*obj).getTemplateID( detid.rawId());
-			cout<<"The DetID: "<<detid.rawId()<<" is mapped to the template: "<<mapnum<<".\n\n";
+			//cout<<"The DetID: "<<detid.rawId()<<" is mapped to the template: "<<mapnum<<".\n\n";
 
 			//else 
 				//if ( ! (*obj).putTemplateID( detid.rawId(),templids[1] ) )
@@ -460,14 +459,13 @@ SiPixelTemplateDBObjectUploader::analyze(const edm::Event& iEvent, const edm::Ev
 	edm::Service<cond::service::PoolDBOutputService> poolDbService;
 	if( !poolDbService.isAvailable() ) // Die if not available
 		throw cms::Exception("NotAvailable") << "PoolDBOutputService not available";
-	if(poolDbService->isNewTagRequest("SiPixelTemplateDBObjectRcd"))
-		poolDbService->writeOne( obj, poolDbService->beginOfTime(), "SiPixelTemplateDBObjectRcd");
+	if(poolDbService->isNewTagRequest("SiPixel2DTemplateDBObjectRcd"))
+		poolDbService->writeOne( obj, poolDbService->beginOfTime(), "SiPixel2DTemplateDBObjectRcd");
 	else
-		poolDbService->writeOne( obj, poolDbService->currentTime(), "SiPixelTemplateDBObjectRcd");
-
+		poolDbService->writeOne( obj, poolDbService->currentTime(), "SiPixel2DTemplateDBObjectRcd");
 }
 
-void SiPixelTemplateDBObjectUploader::endJob()
+void SiPixel2DTemplateDBObjectUploader::endJob()
 {
 }
- 
+

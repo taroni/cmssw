@@ -216,7 +216,7 @@ ClusterAnalyzer::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
        mod_tmp /= 10;
      }
      
-     if ( mod_tmp < 5 ){
+     if ( mod_tmp < 6 ){
 
        histos1D_[ (tmpstr + "nclusters").c_str() ] -> Fill( class_ -> GetGenericVariable("cHits", *mod) );
        histos1D_[ (tmpstr + "avgSize").c_str()   ] -> Fill( class_ -> GetGenericVariable("cSize", *mod)  /class_ -> GetGenericVariable("cHits", *mod) );
