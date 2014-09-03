@@ -118,7 +118,7 @@ process.load("RecoTracker.TrackProducer.TrackRefitters_cff")
 
 process.RECOoutput = cms.OutputModule("PoolOutputModule",
     outputCommands = process.FEVTDEBUGEventContent.outputCommands,
-    fileName = cms.untracked.string('ZpTauTau8TeV_simsplit_71X_test_2.root'),
+    fileName = cms.untracked.string('ZpTauTau8TeV_simsplit_72X.root'),
     dataset = cms.untracked.PSet(
         #filterName = cms.untracked.string(''),
         dataTier = cms.untracked.string('RECO')
@@ -155,9 +155,9 @@ from CondCore.DBCommon.CondDBSetup_cfi import *
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
 process.load("CalibTracker.SiPixelESProducers.SiPixelTemplateDBObjectESProducer_cfi")
 process.myPixelTemplate = cms.ESSource("PoolDBESSource",CondDBSetup,
-                                             connect = cms.string("sqlite_file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/templates/siPixelTemplates38T_IOV7.db"),
+                                       connect = cms.string("sqlite_file:/afs/cern.ch/work/t/taroni/private/ClusterSplitting/templates/siPixelTemplates38T_2012_IOV7_v21.db"),
                                              toGet = cms.VPSet(cms.PSet(record = cms.string("SiPixelTemplateDBObjectRcd"),
-                                             tag = cms.string("SiPixelTemplateDBObject38Tv3"))
+                                             tag = cms.string("SiPixelTemplateDBObject38Tv21"))
                                                            )
                                              )
 process.es_prefer_myPixelTemplate = cms.ESPrefer("PoolDBESSource","myPixelTemplate")
