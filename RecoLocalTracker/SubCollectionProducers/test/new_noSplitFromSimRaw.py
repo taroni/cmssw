@@ -30,11 +30,10 @@ process.maxEvents = cms.untracked.PSet(
 # Input source
 process.source = cms.Source("PoolSource",
     secondaryFileNames = cms.untracked.vstring(),
-    fileNames = cms.untracked.vstring(#'file:relvalTT_step3.root'
-        '/store/relval/CMSSW_7_3_0_pre3/RelValProdTTbar_13/GEN-SIM-RECO/MCRUN2_73_V5-v1/00000/6C790212-5976-E411-8B03-02163E00E617.root',
-        '/store/relval/CMSSW_7_3_0_pre3/RelValProdTTbar_13/GEN-SIM-RECO/MCRUN2_73_V5-v1/00000/B4F0F65F-7A76-E411-A860-02163E00FE2C.root',
-        '/store/relval/CMSSW_7_3_0_pre3/RelValProdTTbar_13/GEN-SIM-RECO/MCRUN2_73_V5-v1/00000/D25D0897-6F76-E411-A792-02163E010ED1.root',
-        )
+    fileNames = cms.untracked.vstring('/store/relval/CMSSW_7_3_0_pre3/RelValProdTTbar_13/GEN-SIM-RAW/MCRUN2_73_V5-v1/00000/30BCF1D1-6176-E411-B3F1-02163E010EEA.root',
+'/store/relval/CMSSW_7_3_0_pre3/RelValProdTTbar_13/GEN-SIM-RAW/MCRUN2_73_V5-v1/00000/5E42E05E-4676-E411-861E-FA163EB22FE1.root',
+'/store/relval/CMSSW_7_3_0_pre3/RelValProdTTbar_13/GEN-SIM-RAW/MCRUN2_73_V5-v1/00000/6646A08E-4F76-E411-9C1A-02163E010EF0.root',
+'/store/relval/CMSSW_7_3_0_pre3/RelValProdTTbar_13/GEN-SIM-RAW/MCRUN2_73_V5-v1/00000/8CB5B058-4476-E411-8D05-02163E00EA37.root')
 )
 
 process.options = cms.untracked.PSet(
@@ -42,17 +41,17 @@ process.options = cms.untracked.PSet(
 )
 process.splitClusters = cms.EDProducer(
     "TrackClusterSplitter",
-    stripClusters         = cms.InputTag("siStripClusters::RECO"),
-    pixelClusters         = cms.InputTag("siPixelClusters::RECO"),
+    stripClusters         = cms.InputTag("siStripClusters::SPLIT"),
+    pixelClusters         = cms.InputTag("siPixelClusters::SPLIT"),
     useTrajectories       = cms.bool(False),
-    trajTrackAssociations = cms.InputTag('generalTracks::RECO'),
+    trajTrackAssociations = cms.InputTag('generalTracks::SPLIT'),
     tracks                = cms.InputTag('pixelTracks::SPLIT'),
     propagator            = cms.string('AnalyticalPropagator'),
     vertices              = cms.InputTag('pixelVertices::SPLIT'),
-    simSplitPixel         = cms.bool(False), # ideal pixel splitting turned OFF
-    simSplitStrip         = cms.bool(False), # ideal strip splitting turned OFF
-    tmpSplitPixel         = cms.bool(True), # template pixel spliting
-    tmpSplitStrip         = cms.bool(True), # template strip splitting
+    simSplitPixel         = cms.bool(True), # ideal pixel splitting turned OFF
+    simSplitStrip         = cms.bool(True), # ideal strip splitting turned OFF
+    tmpSplitPixel         = cms.bool(False), # template pixel spliting
+    tmpSplitStrip         = cms.bool(False), # template strip splitting
     useStraightTracks     = cms.bool(True),
     LoadTemplatesFromDB  = cms.bool(True),
     StripTemplateID      = cms.uint32(10),
@@ -66,9 +65,9 @@ process.mySiStripRecHits = process.siStripMatchedRecHits.clone(
 
 
 process.newrechits = cms.Sequence(process.mySiPixelRecHits*process.mySiStripRecHits)
-from RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup_cff import customizeTracking
+#from RecoLocalTracker.SubCollectionProducers.splitter_tracking_setup_cff import customizeTracking
 
-customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits','splitSiPixelClustersCache')
+#customizeTracking('splitClusters', 'splitClusters', 'mySiPixelRecHits', 'mySiStripRecHits','splitSiPixelClustersCache')
 
 process.splitSiPixelClustersCache = cms.EDProducer( "SiPixelClusterShapeCacheProducer",
                                                   src = cms.InputTag( "splitClusters" ),
@@ -92,7 +91,7 @@ process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
     splitLevel = cms.untracked.int32(0),
     eventAutoFlushCompressedSize = cms.untracked.int32(5242880),
     outputCommands = process.RECOSIMEventContent.outputCommands,
-    fileName = cms.untracked.string('file:relvalTT_splitted.root'),
+    fileName = cms.untracked.string('file:relvalTT_step3_nosplittedfromsimraw.root'),
     dataset = cms.untracked.PSet(
         filterName = cms.untracked.string(''),
         dataTier = cms.untracked.string('GEN-SIM-RECO')
@@ -104,13 +103,13 @@ process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
 #    compressionAlgorithm = cms.untracked.string('LZMA'),
 #    eventAutoFlushCompressedSize = cms.untracked.int32(15728640),
 #    outputCommands = process.AODSIMEventContent.outputCommands,
-#    fileName = cms.untracked.string('file:step3_inAODSIM.root'),
+#    fileName = cms.untracked.string('file:step3_inAODSIMfromsimraw.root'),
 #    dataset = cms.untracked.PSet(
 #        filterName = cms.untracked.string(''),
 #        dataTier = cms.untracked.string('AODSIM')
 #    )
 #)
-
+ 
 # Additional output definition
 
 # Other statements
@@ -118,23 +117,19 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 
 # Path and EndPath definitions
-process.raw2digi_step = cms.Path(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.siPixelClusterShapeCache*process.recopixelvertexing)
+process.raw2digi_step = cms.Path(process.RawToDigi)#*process.localreco*process.offlineBeamSpot+process.siPixelClusterShapeCache*process.recopixelvertexing)
 process.L1Reco_step = cms.Path(process.L1Reco)
-process.init_step = cms.Path(process.siPixelRecHits*process.siStripMatchedRecHits*process.siPixelClusterShapeCache*process.recopixelvertexing)
-process.splitClusters_step=cms.Path(process.splitClusters+process.splitSiPixelClustersCache)
+process.splitClusters_step=cms.Path(process.mix+process.splitClusters+process.splitSiPixelClustersCache)
 process.newrechits_step=cms.Path(process.newrechits)
 
-process.reconstruction_step = cms.Path(process.offlineBeamSpot*
-                           process.MeasurementTrackerEvent* # unclear where to put this
-                           process.siPixelClusterShapeCache*process.trackingGlobalReco)
+process.reconstruction_step = cms.Path(process.reconstruction)
 process.eventinterpretaion_step = cms.Path(process.EIsequence)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.RECOSIMoutput_step = cms.EndPath(process.RECOSIMoutput)
 #process.AODSIMoutput_step = cms.EndPath(process.AODSIMoutput)
 
 # Schedule definition
-process.schedule = cms.Schedule(process.init_step, process.splitClusters_step,process.newrechits_step, process.reconstruction_step,#process.eventinterpretaion_step,#it need some PF information
-                                process.endjob_step,process.RECOSIMoutput_step)#,process.AODSIMoutput_step)
+process.schedule = cms.Schedule(process.raw2digi_step,process.L1Reco_step, process.reconstruction_step,process.eventinterpretaion_step,process.endjob_step,process.RECOSIMoutput_step)#,process.AODSIMoutput_step)
 
 # customisation of the process.
 
