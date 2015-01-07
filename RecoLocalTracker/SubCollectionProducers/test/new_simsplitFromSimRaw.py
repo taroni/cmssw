@@ -116,6 +116,20 @@ process.RECOSIMoutput = cms.OutputModule("PoolOutputModule",
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc', '')
 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelHighTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelBarrelLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelEndcapHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsPixelEndcapLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTECHighTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTECLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIBHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIBLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIDHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTIDLowTof')
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTOBHighTof') 
+process.mix.mixObjects.mixSH.crossingFrames.append('TrackerHitsTOBLowTof')
+
+
 # Path and EndPath definitions
 process.raw2digi_step = cms.Path(process.RawToDigi*process.localreco*process.offlineBeamSpot+process.siPixelClusterShapeCache*process.recopixelvertexing)
 process.L1Reco_step = cms.Path(process.L1Reco)
