@@ -14,12 +14,7 @@ from RecoTracker.TkSeedGenerator.SeedGeneratorFromRegionHitsEDProducer_cfi impor
 from RecoTracker.ConversionSeedGenerators.ConversionStep_cff import *
 from RecoPixelVertexing.PixelLowPtUtilities.ClusterShapeTrajectoryFilter_cfi import *
 
-<<<<<<< HEAD
 
-from RecoTracker.TkSeedingLayers.PixelLayerTriplets_cfi import * 
-
-=======
->>>>>>> 6222a3b164bf6f18dd03712166bd27be57489606
 def customizeTracking(newpixclusters, newstripclusters, newpixrechits, newstriprechits, newclustercache):
 
     matchedsplitSiStripRecHits = cms.InputTag(newstriprechits,"matchedRecHit"), 
@@ -98,11 +93,8 @@ def customizeTracking(newpixclusters, newstripclusters, newpixrechits, newstripr
 
     mixedTripletStepClusters.pixelClusters = newpixclusters
     mixedTripletStepClusters.stripClusters = newstripclusters
-<<<<<<< HEAD
+    
     #mixedTripletStepClusters.stripRecHits = newstriprechits
-=======
-    mixedTripletStepClusters.stripRecHits = newstriprechits
->>>>>>> 6222a3b164bf6f18dd03712166bd27be57489606
 
     mixedTripletStepSeedLayersA.BPix.HitProducer =newpixrechits
     mixedTripletStepSeedLayersA.FPix.HitProducer =newpixrechits
