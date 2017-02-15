@@ -69,6 +69,7 @@ void EcalFenixTcpFormat::process(std::vector<int> &Et, std::vector<int> &fgvb,
       if (myEt>0x3ff) myEt=0x3ff ;
 
       // Spike killing
+      std::cout << __PRETTY_FUNCTION__ << " Line " << __LINE__ << " Et " << myEt << " spikeZeroThreshold " << spikeZeroThresh_ << std::endl;
       if((myEt > spikeZeroThresh_) && (mysFgvb == 0))
       {
         myEt = 0;

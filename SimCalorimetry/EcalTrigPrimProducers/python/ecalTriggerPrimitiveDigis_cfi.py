@@ -10,7 +10,7 @@ simEcalTriggerPrimitiveDigis = cms.EDProducer("EcalTrigPrimProducer",
     binOfMaximum = cms.int32(6), ## optional from release 200 on, from 1-10
     Famos = cms.bool(False),
     TcpOutput = cms.bool(False),
-    Debug = cms.bool(False),
+    Debug = cms.bool(True),
     Label = cms.string('simEcalUnsuppressedDigis')
 )
 

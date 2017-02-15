@@ -54,15 +54,15 @@ void EcalFenixStrip::process_part2_barrel(uint32_t stripid,const EcalTPGSlidingW
   this->getFormatterEB()->setParameters(stripid,ecaltpgSlidW) ; 
   this->getFormatterEB()->process(fgvb_out_,peak_out_,filt_out_,format_out_);     
   //this is a test:
-  if (debug_) {
-    std::cout<< "output of formatter is a vector of size: "<<format_out_.size()<<std::endl; 
-    std::cout<< "value : "<<std::endl;
-    for (unsigned int i =0; i<format_out_.size();i++){
-      std::cout <<" "<<format_out_[i];
-    }    
-    std::cout<<std::endl;
+  // if (debug_) {
+  //   std::cout<< __PRETTY_FUNCTION__ << " " << __LINE__ << " output of formatter is a vector of size: "<<format_out_.size()<<std::endl; 
+  //   std::cout<< __PRETTY_FUNCTION__ << " " << __LINE__ << " value : "<<std::endl;
+  //   for (unsigned int i =0; i<format_out_.size();i++){
+  //     std::cout <<" "<<format_out_[i];
+  //   }    
+  //   std::cout<<std::endl;
 
-  }
+  // }
   return;
 
 }
@@ -72,16 +72,24 @@ void  EcalFenixStrip::process_part2_endcap(uint32_t stripid,const EcalTPGSliding
   // call  Fgvb
   //this->getFGVB()->setParameters(stripid,ecaltpgFgStripEE); 
   //this->getFGVB()->process(lin_out_,fgvb_out_);
-
+  debug_ = true;
   // call formatter
+  if (debug_) std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " calling formatter and setting parameters" << std::endl;
   this->getFormatterEE()->setParameters(stripid,ecaltpgSlidW,ecaltpgStripStatus) ;
+  if (debug_) std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " calling formatter and processing" << std::endl;
 
   this->getFormatterEE()->process(fgvb_out_,peak_out_,filt_out_,format_out_);
      
   //this is a test:
    if (debug_) {
-     std::cout<< "output of formatter is a vector of size: "<<format_out_.size()<<std::endl; 
-      std::cout<< "value : "<<std::endl;
+     std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " fgvb output of formatter is a vector of size: "<<fgvb_out_.size()<<std::endl; 
+     for (unsigned int i =0; i<format_out_.size();i++){
+       std::cout <<" "<<std::dec<<fgvb_out_[i];
+     } 
+     std::cout<<std::endl;
+     
+     std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " output of formatter is a vector of size: "<<format_out_.size()<<std::endl; 
+      std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " value : "<<std::endl;
       for (unsigned int i =0; i<format_out_.size();i++){
         std::cout <<" "<<std::dec<<format_out_[i];
       }    

@@ -95,8 +95,8 @@ void EcalFenixTcp::process_part1(std::vector<std::vector<int> > &tpframetow, int
      this->getAdder()->process(tpframetow, nStr, bitMask,adder_out_);
     //this is a test:
     if (debug_) {
-      std::cout<< "output of adder is a vector of size: "<<adder_out_.size()<<std::endl; 
-      std::cout<< "value : "<<std::endl;
+      std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " output of adder is a vector of size: "<<adder_out_.size()<<std::endl; 
+      std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " value : "<<std::endl;
       for (unsigned int i =0; i<adder_out_.size();i++){
 	std::cout <<" "<<adder_out_[i];
       }    
@@ -123,14 +123,14 @@ void EcalFenixTcp::process_part2_barrel(std::vector<std::vector<int> > & bypassl
   //  this->getMaxOf2()->process(bypasslin_out_,nStr,maxOf2_out_);
   this->getMaxOf2()->process(bypasslinout,nStr,bitMask,maxOf2_out_);
   // this is a test:
-  if (debug_) {
-    std::cout<< "output of maxof2 is a vector of size: "<<maxOf2_out_.size()<<std::endl; 
-    std::cout<< "value : "<<std::endl;
-    for (unsigned int i =0; i<maxOf2_out_.size();i++){
-      std::cout <<" "<<std::dec<<maxOf2_out_[i];
-    }    
-    std::cout<<std::endl;
-  }
+  // if (debug_) {
+  //   std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " output of maxof2 is a vector of size: "<<maxOf2_out_.size()<<std::endl; 
+  //   std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " value : "<<std::endl;
+  //   for (unsigned int i =0; i<maxOf2_out_.size();i++){
+  //     std::cout <<" "<<std::dec<<maxOf2_out_[i];
+  //   }    
+  //   std::cout<<std::endl;
+  // }
    
   //call fgvb
 
@@ -141,14 +141,14 @@ void EcalFenixTcp::process_part2_barrel(std::vector<std::vector<int> > & bypassl
   this->getsFGVBEB()->process(bypasslinout,nStr,bitMask,strip_fgvb_out_);
 
   //this is a test:
-  if (debug_) {
-    std::cout<< "output of fgvb is a vector of size: "<<fgvb_out_.size()<<std::endl; 
-    std::cout<< "value : "<<std::endl;
-    for (unsigned int i =0; i<fgvb_out_.size();i++){
-      std::cout <<" "<<std::dec<<fgvb_out_[i];
-    }    
-    std::cout<<std::endl;
-  }
+  // if (debug_) {
+  //   std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " output of fgvb is a vector of size: "<<fgvb_out_.size()<<std::endl; 
+  //   std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " value : "<<std::endl;
+  //   for (unsigned int i =0; i<fgvb_out_.size();i++){
+  //     std::cout <<" "<<std::dec<<fgvb_out_[i];
+  //   }    
+  //   std::cout<<std::endl;
+  // }
 
   // call formatter
   int eTTotShift=2;
@@ -156,14 +156,14 @@ void EcalFenixTcp::process_part2_barrel(std::vector<std::vector<int> > & bypassl
   this->getFormatter()->setParameters(towid.rawId(),ecaltpgLutGroup,ecaltpgLut,ecaltpgBadTT,ecaltpgSpike);
   this->getFormatter()->process(adder_out_,fgvb_out_,strip_fgvb_out_,eTTotShift,tcp_out,tcp_outTcc,false);
   //this is a test:
-  if (debug_) {
-    std::cout<< "output of TCP formatter Barrel is a vector of size: "<<std::dec<<tcp_out.size()<<std::endl; 
-    std::cout<< "value : "<<std::endl;
-    for (unsigned int i =0; i<tcp_out.size();i++){
-      std::cout <<" "<<i<<" "<<std::dec<<tcp_out[i];
-    }    
-    std::cout<<std::endl;
-  }
+  // if (debug_) {
+  //   std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " output of TCP formatter Barrel is a vector of size: "<<std::dec<<tcp_out.size()<<std::endl; 
+  //   std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " value : "<<std::endl;
+  //   for (unsigned int i =0; i<tcp_out.size();i++){
+  //     std::cout <<" "<<i<<" "<<std::dec<<tcp_out[i];
+  //   }    
+  //   std::cout<<std::endl;
+  // }
     
   return;
 }
@@ -193,12 +193,11 @@ void EcalFenixTcp::process_part2_endcap(std::vector<std::vector<int> > & bypassl
   int eTTotShift=2; // Pascal: endcap has 12 bits as in EB (bug in FENIX!!!!) so shift must be applied to just keep [11:2]
 
   this->getFormatter()->setParameters(towid.rawId(),ecaltpgLutGroup,ecaltpgLut,ecaltpgbadTT,0);
-
   this->getFormatter()->process(adder_out_,fgvb_out_,strip_fgvb_out_,eTTotShift,tcp_out,tcp_outTcc,isInInnerRings);
   //this is a test:
   if (debug_) {
-    std::cout<< "output of TCP formatter(endcap) is a vector of size: "<<std::dec<<tcp_out.size()<<std::endl; 
-    std::cout<< "value : "<<std::endl;
+    std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " output of TCP formatter(endcap) is a vector of size: "<<std::dec<<tcp_out.size()<<std::endl; 
+    std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " value : "<<std::endl;
     for (unsigned int i =0; i<tcp_out.size();i++){
       std::cout <<" "<<i<<" "<<std::dec<<tcp_out[i]<<std::endl;
     }    

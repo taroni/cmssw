@@ -26,11 +26,13 @@ void EcalFenixTcpFgvbEE::process(std::vector<std::vector<int> > & bypasslin_out,
       int res = (bypasslin_out[istrip])[i]; 
       res = (res >>bitMask) & 1; //res is FGVB at this stage
       indexLut_[i]= indexLut_[i] | (res << istrip);
+      std::cout << __PRETTY_FUNCTION__ << " line " << __LINE__ << " strip "<< istrip << " " << (bypasslin_out[istrip])[i]<< " "<< nStr<<   " res " << res << " bitMask " << bitMask  << " indexLut " << indexLut_[i] << std::endl; 
     }
     indexLut_[i]= indexLut_[i] | (nStr << 5);
-     
+    
     int mask = 1<<indexLut_[i];
     output[i]= fgee_lut_ & mask;
+    std::cout << __PRETTY_FUNCTION__ << " line " << __LINE__ << " lut "<< fgee_lut_ << " indexLut "<< indexLut_[i]<<  " mask " << mask << " output " << output[1] << " output size "<< output.size()<<  std::endl;  
     if (output[i]>0) output[i]=1;
   }
   return;

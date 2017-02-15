@@ -97,7 +97,11 @@ void EcalTrigPrimFunctionalAlgo::run(const edm::EventSetup & setup, EBDigiCollec
 				     EcalTrigPrimDigiCollection & result,
 				     EcalTrigPrimDigiCollection & resultTcp)
 {
+  std::cout << __PRETTY_FUNCTION__ << " line "<< __LINE__ << " running EcalTrigPrimFunctionalAlgo run_part1 " << std::endl;
+  
   run_part1_EB(col);
+  std::cout << __PRETTY_FUNCTION__ << " line "<< __LINE__ << " running EcalTrigPrimFunctionalAlgo run_part2 " << std::endl;
+  
   run_part2(setup,col,towerMapEB_,result,resultTcp);
 }
 
@@ -107,6 +111,7 @@ void EcalTrigPrimFunctionalAlgo::run(const edm::EventSetup & setup, EEDigiCollec
 							EcalTrigPrimDigiCollection & resultTcp)
 {
 
+  
   run_part1_EE(col);
   run_part2(setup, col,towerMapEE_,result,resultTcp);
 }
@@ -136,5 +141,6 @@ void EcalTrigPrimFunctionalAlgo::run_part1_EB(EBDigiCollection const * col){
 void EcalTrigPrimFunctionalAlgo::run_part1_EE(EEDigiCollection const * col){
   clean(towerMapEE_);
   // loop over dataframes and fill map 
+  std::cout << __PRETTY_FUNCTION__ << " line " << __LINE__ << " filling map " << std::endl;
   fillMap(col,towerMapEE_);
 }

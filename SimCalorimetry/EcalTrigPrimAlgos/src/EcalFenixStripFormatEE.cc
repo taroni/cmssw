@@ -32,6 +32,7 @@ int EcalFenixStripFormatEE::process(){
   if(stripStatus_ != 0) return 0;
 
   // Peak not found - only return fgvb
+
   if(inputPeak_==0) return ((fgvb_ & 0x1) << 12);
     
   int output=input_>>shift_;
@@ -40,7 +41,7 @@ int EcalFenixStripFormatEE::process(){
   // Pascal: finally no,endcap has 12 bits as in EB (bug in FENIX!!!!)
   if(output>0XFFF) output=0XFFF; 
   output=output|((fgvb_ & 0x1) << 12); //Pascal (was 10)
-
+  std::cout << __PRETTY_FUNCTION__ << " line " << __LINE__ <<" " << std::dec<<output <<" " <<  fgvb_ << std::endl;
   return output;    
 } 
 //------------------------------------------------------------------------------------------

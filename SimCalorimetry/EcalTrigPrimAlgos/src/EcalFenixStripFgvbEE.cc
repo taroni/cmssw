@@ -4,6 +4,8 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include <iostream>
 
+#define debug_ 1
+
 EcalFenixStripFgvbEE::EcalFenixStripFgvbEE()
 {
   identif_=0;
@@ -23,12 +25,16 @@ void EcalFenixStripFgvbEE::process( std::vector<std::vector<int> > &linout ,std:
     for (unsigned int ixtal=0;ixtal<linout.size();ixtal++) {
       int adc=linout[ixtal][i];
       int res = (((adc & 0xffff) > threshold_fg_) || ((adc & 0x30000) != 0x0)) ? 1 : 0;
+      std::cout << __PRETTY_FUNCTION__ << " line " << __LINE__ <<  " xtal " << ixtal << " threshold "<< threshold_fg_ << " adc " << adc << " "<< (adc & 0xffff) << " res " << res <<  std::endl; 
       indexLut[i] = indexLut[i] | (res << ixtal);
     }
     int mask = 1<<(indexLut[i]);
     output[i]= ((lut_fg_ & mask) == 0x0) ? 0 : 1;
+    std::cout << __PRETTY_FUNCTION__ << " line " << __LINE__ << " mask " << std::dec<< mask << " lut " << std::hex<< lut_fg_ << " "<< std::dec << output[i]<<  std::endl;
     if(i > 0) output[i-1] = output[i]; // Delay one clock
   }
+
+
   return;
 }  
 
@@ -39,6 +45,7 @@ void EcalFenixStripFgvbEE::setParameters(int identif, uint32_t id,const EcalTPGF
   if (it!=fgmap.end()){
      threshold_fg_ = it->second.threshold;
      lut_fg_ = it->second.lut;
+     if (debug_) std::cout<< __PRETTY_FUNCTION__ << " line " << __LINE__ << " threshold " << threshold_fg_ << ", Lut " << lut_fg_ << std::endl;  
   }
   else
   {
