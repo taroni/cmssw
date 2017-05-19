@@ -13,14 +13,14 @@ EcalFenixStripFgvbEE::EcalFenixStripFgvbEE()
 EcalFenixStripFgvbEE::~EcalFenixStripFgvbEE(){
 }
 
-void EcalFenixStripFgvbEE::process( std::vector<std::vector<int> > &linout ,std::vector<int> & output)
+void EcalFenixStripFgvbEE::process( std::vector<std::vector<int> > &linout, unsigned int nXtals ,std::vector<int> & output)
 {
   std::vector<int> indexLut(output.size());
 
   for (unsigned int i=0;i<output.size();i++) {
     output[i]=0;
     indexLut[i]=0;
-    for (unsigned int ixtal=0;ixtal<linout.size();ixtal++) {
+    for (unsigned int ixtal=0;ixtal<nXtals;ixtal++) {
       int adc=linout[ixtal][i];
       int res = (((adc & 0xffff) > threshold_fg_) || ((adc & 0x30000) != 0x0)) ? 1 : 0;
       indexLut[i] = indexLut[i] | (res << ixtal);

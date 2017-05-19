@@ -201,7 +201,7 @@ class EcalFenixStrip {
  
       // Now call the sFGVB - this is common between EB and EE!
       getFGVB()->setParameters(identif, stripid,ecaltpgFgStripEE_);
-      getFGVB()->process(lin_out_,fgvb_out_temp_);
+      getFGVB()->process(lin_out_,nrXtals,fgvb_out_temp_);
 
       if(debug_)
       {
