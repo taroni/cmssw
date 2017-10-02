@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from PhysicsTools.PatAlgos.slimming.modifiedElectrons_cfi import modifiedElectrons
 from PhysicsTools.PatAlgos.slimming.modifiedPhotons_cfi import modifiedPhotons
-from EgammaAnalysis.ElectronTools.regressionModifier_cfi import regressionModifier
+from RecoEgamma.EgammaTools.regressionModifier_cfi import regressionModifier
 
 slimmedElectrons = modifiedElectrons.clone()
 slimmedPhotons = modifiedPhotons.clone()
