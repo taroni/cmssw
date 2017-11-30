@@ -34,5 +34,7 @@
 <use   name="RecoEcal/EgammaCoreTools"/>
 <use   name="DataFormats/EgammaReco"/>
 <use   name="PhysicsTools/SelectorUtils"/>
+<use   name="RecoEgamma/ElectronIdentification"/>
+
 <use   name="DataFormats/Provenance"/>
 <flags   EDM_PLUGIN="1"/>
