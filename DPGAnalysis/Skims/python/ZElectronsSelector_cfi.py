@@ -1,10 +1,25 @@
 import FWCore.ParameterSet.Config as cms
+# run on MIONAOD
+RUN_ON_MINIAOD = False
+print "ZEE SKIM. RUN ON MINIAOD = ",RUN_ON_MINIAOD
 
+# cuts
 ELECTRON_CUT=("pt > 10 && abs(eta)<2.5")
-goodZeeElectrons = cms.EDFilter("GsfElectronRefSelector",
-                                src = cms.InputTag("gedGsfElectrons"),
-                                cut = cms.string(ELECTRON_CUT)
-                                )
+DIELECTRON_CUT=("mass > 70 && mass < 110 && daughter(0).pt>20 && daughter(1).pt()>10")
+
+
+# single lepton selectors
+if RUN_ON_MINIAOD:
+    goodZeeElectrons = cms.EDFilter("PATElectronRefSelector",
+                                    src = cms.InputTag("slimmedElectrons"),
+                                    cut = cms.string(ELECTRON_CUT)
+                                    )
+else:
+    goodZeeElectrons = cms.EDFilter("GsfElectronRefSelector",
+                                    src = cms.InputTag("gedGsfElectrons"),
+                                    cut = cms.string(ELECTRON_CUT)
+                                    )
+
 
 identifiedElectrons = cms.EDFilter("ZElectronsSelectorAndSkim",
                          src    = cms.InputTag("goodZeeElectrons"),
