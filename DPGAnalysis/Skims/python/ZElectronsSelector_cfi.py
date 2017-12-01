@@ -24,7 +24,6 @@ eleIDWP = cms.PSet( #first for barrel, second for endcap. All values from cutBas
     dPhiInCut                      = cms.vdouble(0.228  ,0.213  )  , # dPhiInCut
     hOverECut                      = cms.vdouble(0.356  ,0.211  )  , # hOverECut
     relCombIsolationWithEALowPtCut = cms.vdouble(0.175  ,0.159  )  , # relCombIsolationWithEALowPtCut
-    absEInverseMinusPInverseCut    = cms.vdouble(0.299  ,0.150  )  , # absEInverseMinusPInverseCut
     missingHitsCut                 = cms.vint32(2       ,3      )    # missingHitsCut
 ) 
 
