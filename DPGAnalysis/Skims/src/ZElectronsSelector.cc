@@ -1,3 +1,11 @@
+// -*- C++ -*-
+// Class:      ZElectronsSelector
+//
+// Original Author:  Silvia Taroni
+//         Created:  Wed, 29 Nov 2017 18:23:54 GMT
+//
+//
+
 #include "FWCore/PluginManager/interface/ModuleDef.h"
 
 // system include files
@@ -122,13 +130,9 @@ bool ZElectronsSelector::operator()(const reco::GsfElectron& el) const{
 
   bool keepEle = false; 
   float pt_e = el.pt();
-  float eta_e = el.eta(); 
-  std::cout << __LINE__ << std::endl;
-  
 
   auto etrack  = el.gsfTrack().get(); 
-  std::cout << __LINE__ << std::endl;
-  
+
   if (el.isEB()){
     if (etrack->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)>missHits[0]) return keepEle; 
     if (el.full5x5_sigmaIetaIeta() >  sigmaIEtaIEtaCut[0]) return keepEle; 
@@ -139,8 +143,6 @@ bool ZElectronsSelector::operator()(const reco::GsfElectron& el) const{
     if (abseta> 1.479) return keepEle; // check if it is really needed
     const float  eA = getEffectiveArea( abseta );
     const float rho = _rhoHandle.isValid() ? (float)(*_rhoHandle) : 0; 
-    std::cout << __LINE__ << " rhoHandle.isValid() " << _rhoHandle.isValid()  << std::endl; 
-    std::cout << __LINE__ << " ept:" <<  pt_e << ", e eta: "<< eta_e << " " << eA<< " " << rho << std::endl; 
     if (( el.pfIsolationVariables().sumChargedHadronPt + 
 	  std::max(float(0.0), el.pfIsolationVariables().sumNeutralHadronEt +  
 		   el.pfIsolationVariables().sumPhotonEt -  eA*rho )
@@ -159,9 +161,6 @@ bool ZElectronsSelector::operator()(const reco::GsfElectron& el) const{
     
     const float  eA = getEffectiveArea( abseta );
     const float rho = _rhoHandle.isValid() ? (float)(*_rhoHandle) : 0; 
-    std::cout << __LINE__ << " rhoHandle.isValid() " << _rhoHandle.isValid()  << std::endl; 
-    std::cout << __LINE__ << " ept:" <<  pt_e << ", e eta: "<< eta_e << " " << eA<< " " << rho << std::endl; 
-    
     if ((el.pfIsolationVariables().sumChargedHadronPt + 
 	 std::max(float(0.0), el.pfIsolationVariables().sumNeutralHadronEt + 
 		 el.pfIsolationVariables().sumPhotonEt - eA*rho)
