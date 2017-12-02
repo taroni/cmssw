@@ -112,7 +112,7 @@ ZElectronsSelector::ZElectronsSelector(const edm::ParameterSet& cfg, edm::Consum
   missHits = eleIDWP.getParameter<std::vector<int> >("missingHitsCut");
   sigmaIEtaIEtaCut= eleIDWP.getParameter<std::vector<double> >("full5x5_sigmaIEtaIEtaCut");
   dEtaInSeedCut   = eleIDWP.getParameter<std::vector<double> >("dEtaInSeedCut");
-  dPhiInCut       = eleIDWP.getParameter<std::vector<double> >("dEtaInSeedCut");
+  dPhiInCut       = eleIDWP.getParameter<std::vector<double> >("dPhiInCut");
   hOverECut       = eleIDWP.getParameter<std::vector<double> >("hOverECut");
   relCombIso      = eleIDWP.getParameter<std::vector<double> >("relCombIsolationWithEALowPtCut");
 
