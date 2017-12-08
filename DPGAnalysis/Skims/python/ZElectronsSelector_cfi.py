@@ -23,7 +23,8 @@ eleIDWP = cms.PSet( #first for barrel, second for endcap. All values from cutBas
     dEtaInSeedCut                  = cms.vdouble(0.00749,0.00895)  , # dEtaInSeedCut
     dPhiInCut                      = cms.vdouble(0.228  ,0.213  )  , # dPhiInCut
     hOverECut                      = cms.vdouble(0.356  ,0.211  )  , # hOverECut
-    relCombIsolationWithEALowPtCut = cms.vdouble(0.175  ,0.159  )  , # relCombIsolationWithEALowPtCut
+    relCombIsolationWithEACut = cms.vdouble(0.175  ,0.159  )  , # relCombIsolationWithEALowPtCut
+    EInverseMinusPInverseCut       = cms.vdouble(0.299  ,0.15   )  ,                
     missingHitsCut                 = cms.vint32(2       ,3      )    # missingHitsCut
 ) 
 
@@ -36,7 +37,7 @@ identifiedElectrons = cms.EDFilter("ZElectronsSelectorAndSkim",
                                    effectiveAreaValues=cms.vdouble( 0.1703, 0.1715, 0.1213, 0.1230, 0.1635, 0.1937, 0.2393),
                                    rho = cms.InputTag("fixedGridRhoFastjetCentralCalo") #from https://github.com/cms-sw/cmssw/blob/09c3fce6626f70fd04223e7dacebf0b485f73f54/RecoEgamma/ElectronIdentification/python/Identification/cutBasedElectronID_tools.py#L564
                          )
-DIELECTRON_CUT=("mass > 70 && mass < 110 && daughter(0).pt>20 && daughter(1).pt()>10")
+DIELECTRON_CUT=("mass > 40 && mass < 140 && daughter(0).pt>20 && daughter(1).pt()>10")
 
 diZeeElectrons = cms.EDProducer("CandViewShallowCloneCombiner",
                                 decay       = cms.string("identifiedElectrons identifiedElectrons"),

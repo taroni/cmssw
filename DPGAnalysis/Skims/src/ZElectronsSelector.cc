@@ -67,6 +67,7 @@ public:
   vector<double> dPhiInCut       ;
   vector<double> hOverECut       ;
   vector<double> relCombIso      ;
+  vector<double> EInvMinusPInv   ;
 
 
 };
@@ -114,8 +115,8 @@ ZElectronsSelector::ZElectronsSelector(const edm::ParameterSet& cfg, edm::Consum
   dEtaInSeedCut   = eleIDWP.getParameter<std::vector<double> >("dEtaInSeedCut");
   dPhiInCut       = eleIDWP.getParameter<std::vector<double> >("dPhiInCut");
   hOverECut       = eleIDWP.getParameter<std::vector<double> >("hOverECut");
-  relCombIso      = eleIDWP.getParameter<std::vector<double> >("relCombIsolationWithEALowPtCut");
-
+  relCombIso      = eleIDWP.getParameter<std::vector<double> >("relCombIsolationWithEACut");
+  EInvMinusPInv   = eleIDWP.getParameter<std::vector<double> >("EInverseMinusPInverseCut");
 }
 
 
@@ -137,23 +138,26 @@ bool ZElectronsSelector::operator()(const reco::GsfElectron& el) const{
     if (etrack->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)>missHits[0]) return keepEle; 
     if (el.full5x5_sigmaIetaIeta() >  sigmaIEtaIEtaCut[0]) return keepEle; 
     if (fabs(el.deltaPhiSuperClusterTrackAtVtx())> dPhiInCut[0]) return keepEle; 
-    if (fabs(el.deltaEtaSuperClusterTrackAtVtx())> dEtaInSeedCut[0]) return keepEle; 
+    if (fabs(el.deltaEtaSeedClusterTrackAtVtx())> dEtaInSeedCut[0]) return keepEle; 
     if (el.hadronicOverEm()>hOverECut[0]) return keepEle;
     float abseta = fabs((el.superCluster().get())->position().eta());
     if (abseta> 1.479) return keepEle; // check if it is really needed
     const float  eA = getEffectiveArea( abseta );
-    const float rho = _rhoHandle.isValid() ? (float)(*_rhoHandle) : 0; 
+    const float rho = _rhoHandle.isValid() ? (float)(*_rhoHandle.product()) : 0; 
     if (( el.pfIsolationVariables().sumChargedHadronPt + 
 	  std::max(float(0.0), el.pfIsolationVariables().sumNeutralHadronEt +  
 		   el.pfIsolationVariables().sumPhotonEt -  eA*rho )
 	  ) > relCombIso[0]*pt_e) return keepEle; 
+    const float ecal_energy_inverse = 1.0/el.ecalEnergy();
+    const float eSCoverP = el.eSuperClusterOverP();
+    if ( std::abs(1.0 - eSCoverP)*ecal_energy_inverse > EInvMinusPInv[0]) return keepEle; 
     keepEle=true;
     
   }else if (el.isEE()){
     if (etrack->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS)>missHits[1]) return keepEle; 
     if (el.full5x5_sigmaIetaIeta() >  sigmaIEtaIEtaCut[1]) return keepEle; 
     if (fabs(el.deltaPhiSuperClusterTrackAtVtx())> dPhiInCut[1]) return keepEle; 
-    if (fabs(el.deltaEtaSuperClusterTrackAtVtx())> dEtaInSeedCut[1]) return keepEle; 
+    if (fabs(el.deltaEtaSeedClusterTrackAtVtx())> dEtaInSeedCut[1]) return keepEle; 
     if (el.hadronicOverEm()>hOverECut[1]) return keepEle;
     float abseta = fabs((el.superCluster())->position().eta());
     if (abseta< 1.479) return keepEle; // check if it is really needed
@@ -165,6 +169,10 @@ bool ZElectronsSelector::operator()(const reco::GsfElectron& el) const{
 	 std::max(float(0.0), el.pfIsolationVariables().sumNeutralHadronEt + 
 		 el.pfIsolationVariables().sumPhotonEt - eA*rho)
 	 ) >relCombIso[1]*pt_e) return keepEle; 
+    const float ecal_energy_inverse = 1.0/el.ecalEnergy();
+    const float eSCoverP = el.eSuperClusterOverP();
+    if ( std::abs(1.0 - eSCoverP)*ecal_energy_inverse > EInvMinusPInv[1]) return keepEle; 
+
     keepEle=true;
 	
   }//isEE
