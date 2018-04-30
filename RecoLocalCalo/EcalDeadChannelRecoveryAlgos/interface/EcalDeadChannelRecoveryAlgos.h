@@ -8,6 +8,7 @@
 #include <string>
 
 #include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryNN.h"
+#include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryBDTG.h"
 
 template <typename DetIdT> class EcalDeadChannelRecoveryAlgos {
  public:
@@ -18,5 +19,6 @@ template <typename DetIdT> class EcalDeadChannelRecoveryAlgos {
 
  private:
   EcalDeadChannelRecoveryNN<DetIdT> nn;
+  EcalDeadChannelRecoveryBDTG<DetIdT> bdtg;
 };
 #endif // RecoLocalCalo_EcalDeadChannelRecoveryAlgos_EcalDeadChannelRecoveryAlgos_HH

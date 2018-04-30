@@ -8,6 +8,7 @@
 //      Feb 14 2013:   Implementation of the criterion to select the "correct"
 // max. cont. crystal.
 //
+//modified by Silvia Taroni on Apr2018
 
 #include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryAlgos.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -16,6 +17,7 @@ template <typename T>
 void EcalDeadChannelRecoveryAlgos<T>::setCaloTopology(
     const CaloTopology *topo) {
   nn.setCaloTopology(topo);
+  bdtg.setCaloTopology(topo);
 }
 
 template <typename T>
@@ -27,7 +29,11 @@ EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(
 
   if (algo == "NeuralNetworks") {
     NewEnergy = this->nn.recover(id, hit_collection, Sum8Cut, AcceptFlag);
-  } else {
+  }else if (algo=="BDTG"){
+    NewEnergy = this->bdtg.recover(id, hit_collection); //ADD here
+    if (NewEnergy!=0) *AcceptFlag=true; //bdtg set to 0 if there is more than one channel in the matrix that is not reponding
+    std::cout << __PRETTY_FUNCTION__<< " " << __LINE__ << " channel recovered " << NewEnergy<< std::endl;
+  }else {
     edm::LogError("EcalDeadChannelRecoveryAlgos")
         << "Invalid algorithm for dead channel recovery.";
     *AcceptFlag = false;
