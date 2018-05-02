@@ -27,7 +27,7 @@ template <typename DetIdT> class EcalDeadChannelRecoveryBDTG {
   
   
   void setCaloTopology(const CaloTopology *topo);
-  double recover(const DetIdT id, const EcalRecHitCollection &hit_collection);
+  double recover(const DetIdT id, const EcalRecHitCollection &hit_collection, bool *AcceptFlag);
 
   TMVA::Reader *reader;
 

@@ -63,7 +63,7 @@ void EcalDeadChannelRecoveryBDTG<EEDetId>::setCaloTopology(const CaloTopology  *
 
 
 template <typename DetIdT>  
-double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalRecHitCollection &hit_collection) {
+double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalRecHitCollection &hit_collection, bool *AcceptFlag) {
 
   //find the matrix around id
   std::vector<DetId> m3x3aroundDC= EcalClusterTools::matrixDetId( topology_, id, -1, 1, -1, 1 );
@@ -81,7 +81,10 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
       EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
       //keep the en, iphi, ieta of xtals of the matrix
       if ( goS_it !=  hit_collection.end() ) {
-	if (goS_it->energy()==0) return 0;
+	if (goS_it->energy()==0) {
+	  *AcceptFlag=false;
+	  return 0;
+	}
         mx.en[cellIndex]=log(goS_it->energy());
 	//mx.iphi[cellIndex]=cell.iphi();
 	//mx.ieta[cellIndex]=cell.ieta();
@@ -92,7 +95,7 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
 
   // evaluate the regression 
   Float_t val = (reader->EvaluateRegression("BDTG"))[0];
-
+  *AcceptFlag=true;
   //return the estimated energy
   return exp(val);
 

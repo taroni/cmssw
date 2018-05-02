@@ -30,7 +30,7 @@ EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(
   if (algo == "NeuralNetworks") {
     NewEnergy = this->nn.recover(id, hit_collection, Sum8Cut, AcceptFlag);
   }else if (algo=="BDTG"){
-    NewEnergy = this->bdtg.recover(id, hit_collection); //ADD here
+    NewEnergy = this->bdtg.recover(id, hit_collection, AcceptFlag); //ADD here
     if (NewEnergy!=0) *AcceptFlag=true; //bdtg set to 0 if there is more than one channel in the matrix that is not reponding
     std::cout << __PRETTY_FUNCTION__<< " " << __LINE__ << " channel recovered " << NewEnergy<< std::endl;
   }else {
