@@ -13,6 +13,7 @@ from RecoLocalCalo.EcalRecProducers.ecalRecHitTPGConditions_cff import *
 #from RecoLocalCalo.EcalRecProducers.ecalGlobalUncalibRecHit_cfi import *
 from RecoLocalCalo.EcalRecProducers.ecalMultiFitUncalibRecHit_cfi import *
 from RecoLocalCalo.EcalRecProducers.ecalRecHit_cfi import *
+from RecoLocalCalo.EcalRecProducers.ecalRecHitRecovered_cfi import *
 from RecoLocalCalo.EcalRecProducers.ecalPreshowerRecHit_cfi import *
 from RecoLocalCalo.EcalRecProducers.ecalDetIdToBeRecovered_cfi import *
 from RecoLocalCalo.EcalRecProducers.ecalCompactTrigPrim_cfi import *
@@ -26,7 +27,7 @@ from RecoLocalCalo.EcalRecProducers.ecalDetailedTimeRecHit_cfi import *
 ecalUncalibRecHitSequence = cms.Sequence(ecalMultiFitUncalibRecHit*
                                         ecalDetIdToBeRecovered)
 
-ecalRecHitSequence        = cms.Sequence(ecalRecHit*
+ecalRecHitSequence        = cms.Sequence(ecalRecHit*ecalRecHitRecovered*
                                          ecalCompactTrigPrim*
                                          ecalTPSkim+
                                          ecalPreshowerRecHit)
