@@ -29,12 +29,13 @@ template <typename DetIdT> class EcalDeadChannelRecoveryBDTG {
   void setCaloTopology(const CaloTopology *topo);
   double recover(const DetIdT id, const EcalRecHitCollection &hit_collection, bool *AcceptFlag);
 
-  TMVA::Reader *reader;
+  TMVA::Reader *readerNoCrack;
+  TMVA::Reader *readerCrack;
 
  private:
   const CaloTopology* topology_;
   struct XtalMatrix {
-    Float_t en[8];//, ieta[8], iphi[8];
+    Float_t en[9], ieta[9], iphi[9];
   };
 
   XtalMatrix mx;
