@@ -77,7 +77,7 @@ ecalRecHit = cms.EDProducer("EcalRecHitProducer",
     ebFEToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:ebFE"),
     eeFEToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:eeFE"),
     singleChannelRecoveryMethod = cms.string("BDTG"), #default NeuralNetworks
-    singleChannelRecoveryThreshold = cms.double(0),##default 8
+    singleChannelRecoveryThreshold = cms.double(0.280),##default 8
     triggerPrimitiveDigiCollection = cms.InputTag("ecalDigis:EcalTriggerPrimitives"),
     cleaningConfig=cleaningAlgoConfig,
 

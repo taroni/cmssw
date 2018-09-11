@@ -130,6 +130,7 @@ EcalRecHitWorkerRecover::run( const edm::Event & evt,
                     ebDeadChannelCorrector.setCaloTopology(caloTopology_.product());
 
                     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE
+		    //std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " "<< singleRecoveryThreshold_<< std::endl;
                     bool AcceptRecHit=true;
                     EcalRecHit hit = ebDeadChannelCorrector.correct( detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, &AcceptRecHit);
 

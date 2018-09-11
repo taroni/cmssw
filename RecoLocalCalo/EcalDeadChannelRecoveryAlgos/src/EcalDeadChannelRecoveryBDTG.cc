@@ -13,14 +13,14 @@ template <typename T> EcalDeadChannelRecoveryBDTG<T>::EcalDeadChannelRecoveryBDT
   //TFile file(filepath.c_str()).fullPath().c_str());
   readerNoCrack = new TMVA::Reader( "!Color:!Silent" );
 
-  readerNoCrack->AddVariable("E1", &(mx.en[0]));
-  readerNoCrack->AddVariable("E2", &(mx.en[1]));
-  readerNoCrack->AddVariable("E3", &(mx.en[2]));
-  readerNoCrack->AddVariable("E4", &(mx.en[3]));
-  readerNoCrack->AddVariable("E6", &(mx.en[5]));
-  readerNoCrack->AddVariable("E7", &(mx.en[6]));
-  readerNoCrack->AddVariable("E8", &(mx.en[7]));
-  readerNoCrack->AddVariable("E9", &(mx.en[8]));
+  readerNoCrack->AddVariable("log(E1)", &(mx.en[0]));
+  readerNoCrack->AddVariable("log(E2)", &(mx.en[1]));
+  readerNoCrack->AddVariable("log(E3)", &(mx.en[2]));
+  readerNoCrack->AddVariable("log(E4)", &(mx.en[3]));
+  readerNoCrack->AddVariable("log(E6)", &(mx.en[5]));
+  readerNoCrack->AddVariable("log(E7)", &(mx.en[6]));
+  readerNoCrack->AddVariable("log(E8)", &(mx.en[7]));
+  readerNoCrack->AddVariable("log(E9)", &(mx.en[8]));
 
   readerNoCrack->AddVariable("iEta1", &(mx.ieta[0]));
   readerNoCrack->AddVariable("iEta2", &(mx.ieta[1]));
@@ -44,14 +44,14 @@ template <typename T> EcalDeadChannelRecoveryBDTG<T>::EcalDeadChannelRecoveryBDT
 
   readerCrack = new TMVA::Reader( "!Color:!Silent" );
 
-  readerCrack->AddVariable("E1", &(mx.en[0]));
-  readerCrack->AddVariable("E2", &(mx.en[1]));
-  readerCrack->AddVariable("E3", &(mx.en[2]));
-  readerCrack->AddVariable("E4", &(mx.en[3]));
-  readerCrack->AddVariable("E6", &(mx.en[5]));
-  readerCrack->AddVariable("E7", &(mx.en[6]));
-  readerCrack->AddVariable("E8", &(mx.en[7]));
-  readerCrack->AddVariable("E9", &(mx.en[8]));
+  readerCrack->AddVariable("log(E1)", &(mx.en[0]));
+  readerCrack->AddVariable("log(E2)", &(mx.en[1]));
+  readerCrack->AddVariable("log(E3)", &(mx.en[2]));
+  readerCrack->AddVariable("log(E4)", &(mx.en[3]));
+  readerCrack->AddVariable("log(E6)", &(mx.en[5]));
+  readerCrack->AddVariable("log(E7)", &(mx.en[6]));
+  readerCrack->AddVariable("log(E8)", &(mx.en[7]));
+  readerCrack->AddVariable("log(E9)", &(mx.en[8]));
 
   readerCrack->AddVariable("iEta1", &(mx.ieta[0]));
   readerCrack->AddVariable("iEta2", &(mx.ieta[1]));
@@ -73,10 +73,10 @@ template <typename T> EcalDeadChannelRecoveryBDTG<T>::EcalDeadChannelRecoveryBDT
   readerCrack->AddVariable("iPhi8", &(mx.iphi[7]));
   readerCrack->AddVariable("iPhi9", &(mx.iphi[8]));
 
-  edm::FileInPath weightFileNoCrackEdm("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/TMVARegression_trainingWithAliveCrystalsAllRH_8GT280MeV_noCracks_data_BDTG.weights.xml");
+  edm::FileInPath weightFileNoCrackEdm("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/TMVARegression_trainingWithAliveCrystalsAllRH_8GT280MeV_noCracks_rightTAG_data_BDTG.weights.xml");
   reco::details::loadTMVAWeights(readerNoCrack, "BDTG", weightFileNoCrackEdm.fullPath());
 
-  edm::FileInPath weightFileCrackEdm("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/TMVARegression_trainingWithAliveCrystalsAllRH_8GT280MeV_onlyCracks_data_BDTG.weights.xml");
+  edm::FileInPath weightFileCrackEdm("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/TMVARegression_trainingWithAliveCrystalsAllRH_8GT280MeV_onlyCracks_rightTAG_data_BDTG.weights.xml");
   reco::details::loadTMVAWeights(readerCrack, "BDTG", weightFileNoCrackEdm.fullPath());
 
     
@@ -100,7 +100,7 @@ void EcalDeadChannelRecoveryBDTG<EEDetId>::setCaloTopology(const CaloTopology  *
 
 
 template <typename DetIdT>  
-double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalRecHitCollection &hit_collection, bool *AcceptFlag) {
+double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalRecHitCollection &hit_collection, float single8Cut,  bool *AcceptFlag) {
 
   bool isCrack=false;
 
@@ -113,9 +113,18 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
   //  (from the EcalRecHits collection).
   std::vector<DetId>::const_iterator theCells;
   int cellIndex=0.;
+
+  for (theCells = m3x3aroundDC.begin(); theCells != m3x3aroundDC.end(); ++theCells) {
+    EBDetId cell = DetIdT(*theCells);
+    
+    EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " "<< bool(cell==id)<< " " << cell << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
+  }
   for (theCells = m3x3aroundDC.begin(); theCells != m3x3aroundDC.end(); ++theCells) {
     EBDetId cell = DetIdT(*theCells);
     if (cell==id) {
+      // EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
+      //std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
       int iEtaCentral = cell.ieta();
       int iPhiCentral = cell.iphi();
       if ( ( iEtaCentral < 2 && iEtaCentral > -2 )     ||
@@ -128,14 +137,15 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
 	   ( iEtaCentral > 83 || iEtaCentral < -83 )    ||
 	   (int(iPhiCentral+0.5)%20 ==0)
 	   )  isCrack=true;
-      std::cout << __PRETTY_FUNCTION__ << " " << id << ", ieta" << iEtaCentral << ", iphi "<< iPhiCentral << std::endl;
-      continue;
+      //std::cout << __PRETTY_FUNCTION__ << " " << id << ", ieta" << iEtaCentral << ", iphi "<< iPhiCentral << std::endl;
+      //continue;
     }
-    if (! cell.null()) {
+    if (!cell.null()) {
       EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
       //keep the en, iphi, ieta of xtals of the matrix
-      if ( goS_it !=  hit_collection.end() ) {
-	if (goS_it->energy()==0) {
+      if ( cell!=id && goS_it!=hit_collection.end() ) {
+	std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << cell << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
+	if (goS_it->energy()<=0 || goS_it->energy()<single8Cut) {
 	  *AcceptFlag=false;
 	  return 0;
 	}
@@ -151,10 +161,10 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
   Float_t val =0. ;
   if (isCrack) {
     val = (readerCrack->EvaluateRegression("BDTG"))[0];
-    std::cout << __PRETTY_FUNCTION__ << " Central evaluation Crack " << exp(val) << " GeV" << std::endl;
+    //std::cout << __PRETTY_FUNCTION__ << " Central evaluation Crack " << exp(val) << " GeV" << std::endl;
   }else {
     val= (readerNoCrack->EvaluateRegression("BDTG"))[0];
-    std::cout << __PRETTY_FUNCTION__ << " Central evaluation NoCrack " << exp(val) << " GeV" << std::endl;
+    //std::cout << __PRETTY_FUNCTION__ << " Central evaluation NoCrack " << exp(val) << " GeV" << std::endl;
 
   }
   *AcceptFlag=true;
