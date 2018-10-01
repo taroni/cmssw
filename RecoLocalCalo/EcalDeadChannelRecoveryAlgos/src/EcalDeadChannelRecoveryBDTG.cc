@@ -6,6 +6,8 @@
 #include <TMath.h>
 #include <TDirectory.h>
 
+#define DEBUG_ 1
+
 template <typename T> EcalDeadChannelRecoveryBDTG<T>::EcalDeadChannelRecoveryBDTG() {
 
   //std::string filepath
@@ -103,7 +105,7 @@ template <typename DetIdT>
 double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalRecHitCollection &hit_collection, float single8Cut,  bool *AcceptFlag) {
 
   bool isCrack=false;
-
+  if (DEBUG_) std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" crystal id " <<  id << " crystal energy " << hit_collection.find(id)->energy() << ", crystal flag  " <<  hit_collection.find(id)->checkFlag(EcalRecHit::kDead)<< std::endl;
   //find the matrix around id
   std::vector<DetId> m3x3aroundDC= EcalClusterTools::matrixDetId( topology_, id, -1, 1, -1, 1 );
 
@@ -114,17 +116,33 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
   std::vector<DetId>::const_iterator theCells;
   int cellIndex=0.;
 
+  // for (theCells = m3x3aroundDC.begin(); theCells != m3x3aroundDC.end(); ++theCells) {
+  //   EBDetId cell = DetIdT(*theCells);
+    
+  //   EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
+  //   if (DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " "<< bool(cell==id)<< " " << cell << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
+  // }
   for (theCells = m3x3aroundDC.begin(); theCells != m3x3aroundDC.end(); ++theCells) {
     EBDetId cell = DetIdT(*theCells);
-    
     EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
-    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " "<< bool(cell==id)<< " " << cell << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
+   
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<<  " " << id << " " << cell   << " " << goS_it->isTimeValid()<< " " << bool(goS_it!=hit_collection.end()) <<" " <<goS_it->energy() << 
+      ", is kGood " << goS_it->checkFlag(EcalRecHit::kGood) << ", is kPoorReco " << goS_it->checkFlag(EcalRecHit::kPoorReco) << ", is kOutOfTime "<< goS_it->checkFlag(EcalRecHit::kOutOfTime) << 
+      ", is kFaultyHardware "<< goS_it->checkFlag(EcalRecHit::kFaultyHardware) << ", is kNoisy " << goS_it->checkFlag(EcalRecHit::kNoisy) << 
+      ", is kPoorCalib " << goS_it->checkFlag(EcalRecHit::kPoorCalib) << ", is kSaturated " << goS_it->checkFlag(EcalRecHit::kSaturated) << 
+      ", is kLeadingEdgeRecovered " << goS_it->checkFlag(EcalRecHit::kLeadingEdgeRecovered) << ", is kNeighboursRecovered" << goS_it->checkFlag(EcalRecHit::kNeighboursRecovered) << 
+      ", is kTowerRecovered " << goS_it->checkFlag(EcalRecHit::kTowerRecovered) << ", is kTowerRecovered " << goS_it->checkFlag(EcalRecHit::kTowerRecovered) << 
+      ", is kDead " << goS_it->checkFlag(EcalRecHit::kDead) << ", is kKilled " << goS_it->checkFlag(EcalRecHit::kKilled) << ", is kTPSaturated" << goS_it->checkFlag(EcalRecHit::kTPSaturated) << 
+      ", is kL1SpikeFlag " << goS_it->checkFlag(EcalRecHit::kL1SpikeFlag) << ", is kWeird " << goS_it->checkFlag(EcalRecHit::kWeird) << ", is kDiWeird" << goS_it->checkFlag(EcalRecHit::kDiWeird) <<
+      ", is kHasSwitchToGain6 " << goS_it->checkFlag(EcalRecHit::kHasSwitchToGain6) << ", is kHasSwitchToGain1" << goS_it->checkFlag(EcalRecHit::kHasSwitchToGain1) << 
+      ", is kUnknown " << goS_it->checkFlag(EcalRecHit::kUnknown)<< std::endl;
   }
   for (theCells = m3x3aroundDC.begin(); theCells != m3x3aroundDC.end(); ++theCells) {
     EBDetId cell = DetIdT(*theCells);
+    std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " "<< cell << " " << bool(cell.null())<<  std::endl;
     if (cell==id) {
-      // EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
-      //std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
+      EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
+      std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
       int iEtaCentral = cell.ieta();
       int iPhiCentral = cell.iphi();
       if ( ( iEtaCentral < 2 && iEtaCentral > -2 )     ||
@@ -137,23 +155,33 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
 	   ( iEtaCentral > 83 || iEtaCentral < -83 )    ||
 	   (int(iPhiCentral+0.5)%20 ==0)
 	   )  isCrack=true;
-      //std::cout << __PRETTY_FUNCTION__ << " " << id << ", ieta" << iEtaCentral << ", iphi "<< iPhiCentral << std::endl;
+      std::cout << __PRETTY_FUNCTION__ << " " << id << ", ieta" << iEtaCentral << ", iphi "<< iPhiCentral << std::endl;
       //continue;
     }
-    if (!cell.null()) {
+    if (bool(cell.null())==false) {
       EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
+      std::cout << __PRETTY_FUNCTION__ << " " << __LINE__<<  " " << id << " " << cell   << " " << goS_it->isTimeValid()<< " " << bool(goS_it!=hit_collection.end()) <<" " <<goS_it->energy() << std::endl;
       //keep the en, iphi, ieta of xtals of the matrix
       if ( cell!=id && goS_it!=hit_collection.end() ) {
-	std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << cell << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
-	if (goS_it->energy()<=0 || goS_it->energy()<single8Cut) {
+	if (DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << cell << " " << goS_it->energy()<<  " " <<  single8Cut << std::endl;
+	if (goS_it->energy()<=0. || goS_it->energy()<single8Cut) {
 	  *AcceptFlag=false;
-	  return 0;
+	  return 0.;
 	}
         mx.en[cellIndex]=log(goS_it->energy());
 	mx.iphi[cellIndex]=cell.iphi();
         mx.ieta[cellIndex]=cell.ieta();
         cellIndex++;
+      }else{
+	if (DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << cell << "not recovering" << std::endl;
+      *AcceptFlag=false;
+      return 0.;
       }
+    }
+    else {
+      if (DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << cell << "not recovering" << std::endl;
+      *AcceptFlag=false;
+      return 0.;
     }
   }
 
@@ -161,10 +189,10 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
   Float_t val =0. ;
   if (isCrack) {
     val = (readerCrack->EvaluateRegression("BDTG"))[0];
-    //std::cout << __PRETTY_FUNCTION__ << " Central evaluation Crack " << exp(val) << " GeV" << std::endl;
+    if (DEBUG_)std::cout << __PRETTY_FUNCTION__ << " Central evaluation Crack " << exp(val) << " GeV" << std::endl;
   }else {
     val= (readerNoCrack->EvaluateRegression("BDTG"))[0];
-    //std::cout << __PRETTY_FUNCTION__ << " Central evaluation NoCrack " << exp(val) << " GeV" << std::endl;
+    if (DEBUG_)std::cout << __PRETTY_FUNCTION__ << " Central evaluation NoCrack " << exp(val) << " GeV" << std::endl;
 
   }
   *AcceptFlag=true;

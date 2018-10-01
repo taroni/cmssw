@@ -13,6 +13,8 @@
 #include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryAlgos.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
+#define DEBUG_ 1
+
 template <typename T>
 void EcalDeadChannelRecoveryAlgos<T>::setCaloTopology(
     const CaloTopology *topo) {
@@ -31,8 +33,8 @@ EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(
     NewEnergy = this->nn.recover(id, hit_collection, single8Cut*8, AcceptFlag);
   }else if (algo=="BDTG"){
     NewEnergy = this->bdtg.recover(id, hit_collection, single8Cut,  AcceptFlag); //ADD here
-    if (NewEnergy!=0) *AcceptFlag=true; //bdtg set to 0 if there is more than one channel in the matrix that is not reponding
-    //std::cout << __PRETTY_FUNCTION__<< " " << __LINE__ << " channel recovered " << NewEnergy<< std::endl;
+    if (NewEnergy>0.) *AcceptFlag=true; //bdtg set to 0 if there is more than one channel in the matrix that is not reponding
+    if (DEBUG_)std::cout << __PRETTY_FUNCTION__<< " " << __LINE__ << " channel recovered " << NewEnergy<< " " << *AcceptFlag <<  std::endl;
   }else {
     edm::LogError("EcalDeadChannelRecoveryAlgos")
         << "Invalid algorithm for dead channel recovery.";

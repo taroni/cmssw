@@ -18,6 +18,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "FWCore/Framework/interface/EDProducer.h"
 
+#define DEBUG_ 1
 
 EcalRecHitWorkerRecover::EcalRecHitWorkerRecover(const edm::ParameterSet&ps, edm::ConsumesCollector&  c) :
   EcalRecHitWorkerBaseClass(ps,c)
@@ -69,7 +70,7 @@ void EcalRecHitWorkerRecover::set(const edm::EventSetup& es)
 bool
 EcalRecHitWorkerRecover::run( const edm::Event & evt, 
                 const EcalUncalibratedRecHit& uncalibRH,
-                EcalRecHitCollection & result )
+                EcalRecHitCollection & result)
 {
         DetId detId=uncalibRH.id();
 	uint32_t flags = (0xF & uncalibRH.flags()); 
@@ -132,13 +133,17 @@ EcalRecHitWorkerRecover::run( const edm::Event & evt,
                     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE
 		    //std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " "<< singleRecoveryThreshold_<< std::endl;
                     bool AcceptRecHit=true;
-                    EcalRecHit hit = ebDeadChannelCorrector.correct( detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, &AcceptRecHit);
-
-                    if ( hit.energy() != 0 and AcceptRecHit == true ) {
-                        hit.setFlag( EcalRecHit::kNeighboursRecovered ) ;
+                    //EcalRecHit hit = ebDeadChannelCorrector.correct( detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, &AcceptRecHit);
+		    EcalRecHit hit = ebDeadChannelCorrector.correct( detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, &AcceptRecHit);
+ 
+		    if( DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " recovered energy "<<  hit.energy() << " accept flag " << AcceptRecHit << std::endl ; 
+                    if ( hit.energy() > 0. && AcceptRecHit == true ) {
+                       hit.setFlag( EcalRecHit::kNeighboursRecovered ) ;
+		       if( DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " recovered energy "<<  hit.energy() << " accept flag " << AcceptRecHit<< " hit flag "<< hit.checkFlag(EcalRecHit::kNeighboursRecovered ) << std::endl ; 
                     } else {
                         // recovery failed
                         hit.setFlag( EcalRecHit::kDead ) ;
+			if( DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " recovery FAILED " <<  hit.checkFlag(EcalRecHit::kDead ) << std::endl;
                     }
                     insertRecHit( hit, result );
                 
@@ -149,9 +154,9 @@ EcalRecHitWorkerRecover::run( const edm::Event & evt,
                     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE
                     bool AcceptRecHit=true;
                     EcalRecHit hit = eeDeadChannelCorrector.correct( detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, &AcceptRecHit);
-                    if ( hit.energy() != 0 and AcceptRecHit == true ) {
+                    if ( hit.energy() != 0 && AcceptRecHit == true ) {
                         hit.setFlag( EcalRecHit::kNeighboursRecovered ) ;
-                    } else {
+		    } else {
                        // recovery failed
                        hit.setFlag( EcalRecHit::kDead ) ;
                     }
@@ -395,6 +400,7 @@ void EcalRecHitWorkerRecover::insertRecHit( const EcalRecHit &hit, EcalRecHitCol
                 // overwrite existing recHit
                 *it = hit;
         }
+	//	std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " recovered energy "<<  hit.energy() <<  " hit flag "<< hit.checkFlag(EcalRecHit::kNeighboursRecovered ) << " collection size " << collection.size() << std::endl;
         if ( hit.id().subdetId() == EcalBarrel ) {
                 recoveredDetIds_EB_.insert( hit.id() );
         } else if ( hit.id().subdetId() == EcalEndcap ) {
