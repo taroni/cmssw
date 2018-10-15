@@ -27,6 +27,20 @@
 
 #include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryAlgos.h"
 
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <stdint.h>
+#include <sstream>
+#include <cmath>
+#include <map>
+#include <iterator>
+#include <string>
+#include <cstdlib>
+#include <vector>
+
+
 class EcalRecHitWorkerRecover : public EcalRecHitWorkerBaseClass {
         public: 
                 EcalRecHitWorkerRecover(const edm::ParameterSet&, edm::ConsumesCollector& c);
@@ -34,7 +48,7 @@ class EcalRecHitWorkerRecover : public EcalRecHitWorkerBaseClass {
 
                 void set(const edm::EventSetup& es) override;
                 bool run(const edm::Event& evt, const EcalUncalibratedRecHit& uncalibRH, EcalRecHitCollection & result) override;
-
+		
         protected:
 
                 void insertRecHit( const EcalRecHit &hit, EcalRecHitCollection &collection );
@@ -93,6 +107,8 @@ class EcalRecHitWorkerRecover : public EcalRecHitWorkerBaseClass {
 
 	EcalDeadChannelRecoveryAlgos<EBDetId> ebDeadChannelCorrector;
 	EcalDeadChannelRecoveryAlgos<EEDetId> eeDeadChannelCorrector;
+
+	std::vector< std::pair < int, int >  > vIphiIeta ;
 
 };
 

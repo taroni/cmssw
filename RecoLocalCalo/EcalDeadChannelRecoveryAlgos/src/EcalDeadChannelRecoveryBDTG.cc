@@ -1,12 +1,11 @@
 #include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryBDTG.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h" // can I use a egammatools here?
 #include "FWCore/ParameterSet/interface/FileInPath.h"
-
 #include <iostream>
 #include <TMath.h>
 #include <TDirectory.h>
 
-#define DEBUG_ 1
+#define DEBUG_ 0
 
 template <typename T> EcalDeadChannelRecoveryBDTG<T>::EcalDeadChannelRecoveryBDTG() {
 
@@ -155,7 +154,7 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
 	   ( iEtaCentral > 83 || iEtaCentral < -83 )    ||
 	   (int(iPhiCentral+0.5)%20 ==0)
 	   )  isCrack=true;
-      std::cout << __PRETTY_FUNCTION__ << " " << id << ", ieta" << iEtaCentral << ", iphi "<< iPhiCentral << std::endl;
+      std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " " << id << ", ieta" << iEtaCentral << ", iphi "<< iPhiCentral << std::endl;
       //continue;
     }
     if (bool(cell.null())==false) {
@@ -172,13 +171,8 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
 	mx.iphi[cellIndex]=cell.iphi();
         mx.ieta[cellIndex]=cell.ieta();
         cellIndex++;
-      }else{
-	if (DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << cell << "not recovering" << std::endl;
-      *AcceptFlag=false;
-      return 0.;
       }
-    }
-    else {
+    } else {
       if (DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<" " << id << " " << cell << "not recovering" << std::endl;
       *AcceptFlag=false;
       return 0.;
