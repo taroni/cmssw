@@ -108,7 +108,6 @@ class EcalRecHitWorkerRecover : public EcalRecHitWorkerBaseClass {
 	EcalDeadChannelRecoveryAlgos<EBDetId> ebDeadChannelCorrector;
 	EcalDeadChannelRecoveryAlgos<EEDetId> eeDeadChannelCorrector;
 
-	std::vector< std::pair < int, int >  > vIphiIeta ;
 
 };
 

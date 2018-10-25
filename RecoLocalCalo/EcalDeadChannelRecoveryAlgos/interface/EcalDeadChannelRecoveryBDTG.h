@@ -35,7 +35,7 @@ template <typename DetIdT> class EcalDeadChannelRecoveryBDTG {
  private:
   const CaloTopology* topology_;
   struct XtalMatrix {
-    Float_t en[9], ieta[9], iphi[9];
+    Float_t rEn[9], ieta[9], iphi[9], sumE8;
   };
 
   XtalMatrix mx;

@@ -27,7 +27,6 @@
 #include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
 
-#define DEBUG_ 0 
 
 EcalRecHitProducer::EcalRecHitProducer(const edm::ParameterSet& ps)
 {
@@ -169,11 +168,9 @@ EcalRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& es)
                                         if ( recoverEBVFE_ || killDeadChannels_ ) workerRecover_->run( evt, urh, *ebRecHits );
                                 } else {
                                         // uses the EcalUncalibratedRecHit to pass the DetId info
-				  if( DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ <<std::endl;
                                         urh = EcalUncalibratedRecHit( *it, 0, 0, 0, 0, EcalRecHitWorkerBaseClass::EB_single );
                                         if ( recoverEBIsolatedChannels_ || killDeadChannels_ ) workerRecover_->run( evt, urh, *ebRecHits );
-					//ebRecHits->sort();
-					if( DEBUG_)std::cout << __PRETTY_FUNCTION__ << " " << __LINE__  << " " << ebRecHits->find(*it)->checkFlag(EcalRecHit::kNeighboursRecovered)<< " " << ebRecHits->find(*it)->energy()<< std::endl;
+								
                                 }
                                 
                         }
