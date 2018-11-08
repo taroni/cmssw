@@ -36,5 +36,6 @@ ecalTBSimRecHit = cms.EDProducer("EcalRecHitProducer",
     eeFEToBeRecovered = cms.InputTag("eeFE"),
     singleChannelRecoveryMethod = cms.string("NeuralNetworks"),
     singleChannelRecoveryThreshold = cms.double(0),
+    sum8ChannelRecoveryThreshold = cms.double(0),
     triggerPrimitiveDigiCollection = cms.InputTag("ecalDigis")
 )

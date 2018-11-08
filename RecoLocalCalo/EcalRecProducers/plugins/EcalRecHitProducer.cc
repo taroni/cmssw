@@ -27,6 +27,7 @@
 #include "FWCore/ParameterSet/interface/ConfigurationDescriptions.h"
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
 
+
 EcalRecHitProducer::EcalRecHitProducer(const edm::ParameterSet& ps)
 {
        
@@ -169,6 +170,7 @@ EcalRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& es)
                                         // uses the EcalUncalibratedRecHit to pass the DetId info
                                         urh = EcalUncalibratedRecHit( *it, 0, 0, 0, 0, EcalRecHitWorkerBaseClass::EB_single );
                                         if ( recoverEBIsolatedChannels_ || killDeadChannels_ ) workerRecover_->run( evt, urh, *ebRecHits );
+								
                                 }
                                 
                         }
@@ -324,6 +326,7 @@ void EcalRecHitProducer::fillDescriptions(edm::ConfigurationDescriptions& descri
   desc.add<edm::InputTag>("eeFEToBeRecovered",edm::InputTag("ecalDetIdToBeRecovered","eeFE"));
   desc.add<edm::InputTag>("ebDetIdToBeRecovered",edm::InputTag("ecalDetIdToBeRecovered","ebDetId"));
   desc.add<double>("singleChannelRecoveryThreshold",8);
+  desc.add<double>("sum8ChannelRecoveryThreshold",0.);
   {
     std::vector<std::string> temp1;
     temp1.reserve(9);
