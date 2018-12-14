@@ -39,6 +39,8 @@ template <typename DetIdT> class EcalDeadChannelRecoveryBDTG {
   };
 
   XtalMatrix mx;
+  long a[301];
+  
 };
 
 #endif

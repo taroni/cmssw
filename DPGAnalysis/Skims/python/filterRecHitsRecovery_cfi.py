@@ -7,3 +7,8 @@ recHitRecoveryFilter = cms.EDFilter("RecHitRecoveryFilter",
    EERecHits = cms.InputTag('ecalRecHit', 'EcalRecHitsEE')
 )
 
+recovCountFilter= cms.EDFilter("CandViewCountFilter",
+                               src = cms.InputTag("recHitRecoveryFilter"),
+                               minNumber = cms.uint32(1)
+                               )
+recoverySequence = cms.Sequence(recHitRecoveryFilter)

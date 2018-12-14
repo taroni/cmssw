@@ -5,6 +5,12 @@
 #include <TMath.h>
 #include <TDirectory.h>
 
+
+#include<iostream>
+#include<ostream>
+#include<string>
+#include<fstream>
+
 template <typename T> EcalDeadChannelRecoveryBDTG<T>::EcalDeadChannelRecoveryBDTG() {
   readerNoCrack = new TMVA::Reader( "!Color:!Silent" );
 
@@ -77,7 +83,23 @@ template <typename T> EcalDeadChannelRecoveryBDTG<T>::EcalDeadChannelRecoveryBDT
   reco::details::loadTMVAWeights(readerCrack, "BDTG", weightFileNoCrackEdm.fullPath());
 
     
- }
+
+  // std::string line;
+  // std::ifstream myfile("detId.txt");
+  // if(myfile.is_open())
+  //   {
+  //  int i = 0;
+  //  while ( i < 301 && myfile >> a[i] )
+  //    {
+  //      std::cout << a[i] << " ";
+  //      i++;
+  //    }
+   
+  //  std::cout << std::endl ; 
+  //  myfile.close();
+  //   }
+  
+}
 
 template <typename T>EcalDeadChannelRecoveryBDTG<T>::~EcalDeadChannelRecoveryBDTG() {
 }
@@ -94,8 +116,6 @@ void EcalDeadChannelRecoveryBDTG<EEDetId>::setCaloTopology(const CaloTopology  *
   topology_ = topo;
 }
 
-
-
 template <typename DetIdT>  
 double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *AcceptFlag) {
 
@@ -109,6 +129,7 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
   //  Loop over all cells in the vector "NxNaroundDC", and for each cell find it's energy
   //  (from the EcalRecHits collection).
   std::vector<DetId>::const_iterator theCells;
+
   for (theCells = m3x3aroundDC.begin(); theCells != m3x3aroundDC.end(); ++theCells) {
     EBDetId cell = DetIdT(*theCells);
     if (cell==id) {
@@ -128,33 +149,47 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
     }
     if (bool(cell.null())==false) {
       EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
+      //mx.rEn[cellIndex]=0;
+      //mx.iphi[cellIndex]=-599;
+      //mx.ieta[cellIndex]=-99;
+
       //keep the en, iphi, ieta of xtals of the matrix
       if ( cell!=id && goS_it!=hit_collection.end() ) {
+		
 	if (goS_it->energy()<=0. || goS_it->energy()<single8Cut) {
 	  *AcceptFlag=false;
 	  return 0.;
+	}else{
+	  neighTotEn+=goS_it->energy();
+	  mx.rEn[cellIndex]=goS_it->energy();
+	  mx.iphi[cellIndex]=cell.iphi();
+	  mx.ieta[cellIndex]=cell.ieta();
+	  cellIndex++;
 	}
-	neighTotEn+=goS_it->energy();
-        mx.rEn[cellIndex]=goS_it->energy();
-	mx.iphi[cellIndex]=cell.iphi();
-        mx.ieta[cellIndex]=cell.ieta();
+	
+	
+      } else if (cell==id){
+	mx.rEn[cellIndex]=0;
+	cellIndex++;
       }
-      cellIndex++;
+      //std::cout << __LINE__ << " " << cellIndex-1 << " " <<  mx.rEn[cellIndex-1]<< std::endl;
+
     } else {
       *AcceptFlag=false;
       return 0.;
     }
   }
-  if ( cellIndex>=8 && neighTotEn>=single8Cut*8. && neighTotEn >=sum8Cut){
+  if ( cellIndex>=0 && neighTotEn>=single8Cut*8. && neighTotEn >=sum8Cut){
     bool allneighs=true;
     mx.sumE8=neighTotEn;
     for (unsigned int icell=0; icell<9 ; icell++){
       if (mx.rEn[icell]<single8Cut && icell!=4){
 	allneighs=false;
       }
+      // std::cout << __PRETTY_FUNCTION__ << " "<< __LINE__ << " " << icell << " " << mx.rEn[icell] << " "  << neighTotEn << " " << mx.rEn[icell]/neighTotEn<< std::endl;
       mx.rEn[icell]=mx.rEn[icell]/neighTotEn;
     } 
-
+    // std::cout << __PRETTY_FUNCTION__ << " "<< __LINE__ << " --------- "<< allneighs <<  std::endl;
     if (allneighs==true){
       // evaluate the regression 
 
@@ -163,6 +198,8 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
       }else {
 	val= exp((readerNoCrack->EvaluateRegression("BDTG"))[0]);
       }
+      // std::cout << __PRETTY_FUNCTION__ << " "<< __LINE__ << " " << id<< " " << val << " " << log(val) << std::endl;
+      
       *AcceptFlag=true;
       //return the estimated energy
       return val;
