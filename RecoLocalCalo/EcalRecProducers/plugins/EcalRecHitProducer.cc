@@ -99,7 +99,8 @@ EcalRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& es)
 	evt.getByToken( ebUncalibRecHitToken_, pEBUncalibRecHits);
 	ebUncalibRecHits = pEBUncalibRecHits.product();
 	LogDebug("EcalRecHitDebug") << "total # EB uncalibrated rechits: " << ebUncalibRecHits->size();
-        
+	//std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " total # EB uncalibrated rechits: " << ebUncalibRecHits->size()<< std::endl;
+
 
        
 	evt.getByToken( eeUncalibRecHitToken_, pEEUncalibRecHits);
@@ -268,6 +269,8 @@ EcalRecHitProducer::produce(edm::Event& evt, const edm::EventSetup& es)
         // put the collection of recunstructed hits in the event   
         LogInfo("EcalRecHitInfo") << "total # EB calibrated rechits: " << ebRecHits->size();
         LogInfo("EcalRecHitInfo") << "total # EE calibrated rechits: " << eeRecHits->size();
+	
+	//std::cout << __PRETTY_FUNCTION__ << " " << __LINE__ << " total # EB calibrated rechits: " << ebRecHits->size()<< std::endl;
 
         evt.put(std::move(ebRecHits), ebRechitCollection_);
         evt.put(std::move(eeRecHits), eeRechitCollection_);
