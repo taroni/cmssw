@@ -198,7 +198,7 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
       }else {
 	val= exp((readerNoCrack->EvaluateRegression("BDTG"))[0]);
       }
-      // std::cout << __PRETTY_FUNCTION__ << " "<< __LINE__ << " " << id<< " " << val << " " << log(val) << std::endl;
+      std::cout << __PRETTY_FUNCTION__ << " "<< __LINE__ << " " << id<< " " << val << " " << log(val) << std::endl;
       
       *AcceptFlag=true;
       //return the estimated energy
