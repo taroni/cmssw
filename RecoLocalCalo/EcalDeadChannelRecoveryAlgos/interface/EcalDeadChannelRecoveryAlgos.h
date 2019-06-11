@@ -7,16 +7,23 @@
 #include "DataFormats/EcalDetId/interface/EBDetId.h"
 #include <string>
 
+#include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
+
 #include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryNN.h"
+#include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryBDTG.h"
 
-template <typename DetIdT>
-class EcalDeadChannelRecoveryAlgos {
-public:
+#include "FWCore/ParameterSet/interface/ParameterSet.h"
+
+template <typename DetIdT> class EcalDeadChannelRecoveryAlgos {
+ public:
+  void setParameters(const edm::ParameterSet&ps);
   void setCaloTopology(const CaloTopology *topology);
-  EcalRecHit correct(
-      const DetIdT id, const EcalRecHitCollection &hit_collection, std::string algo, double Sum8Cut, bool *AccFlag);
+  EcalRecHit correct(const DetIdT id,
+                     const EcalRecHitCollection &hit_collection,
+                     std::string algo, double Single8Cut, double Sum8Cut, bool *AccFlag);
 
-private:
+ private:
   EcalDeadChannelRecoveryNN<DetIdT> nn;
+  EcalDeadChannelRecoveryBDTG<DetIdT> bdtg;
 };
-#endif  // RecoLocalCalo_EcalDeadChannelRecoveryAlgos_EcalDeadChannelRecoveryAlgos_HH
+#endif // RecoLocalCalo_EcalDeadChannelRecoveryAlgos_EcalDeadChannelRecoveryAlgos_HH
