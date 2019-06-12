@@ -310,8 +310,8 @@ void EcalRecHitProducer::fillDescriptions(edm::ConfigurationDescriptions& descri
   desc.add<edm::InputTag>("ebDetIdToBeRecovered", edm::InputTag("ecalDetIdToBeRecovered", "ebDetId"));
   desc.add<double>("singleChannelRecoveryThreshold", 8);
   desc.add<double>("sum8ChannelRecoveryThreshold",0.);
-  desc.add<edm::FileInPath>("bdtWeightFileNoCracks",edm::FileInPath("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/TMVARegression_trainingWithAliveCrystalsAllRH_8GT700MeV_RelEne_noCracks_rightTAG_data_BDTG_weights.xml"));
-  desc.add<edm::FileInPath>("bdtWeightFileCracks",edm::FileInPath("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/TMVARegression_trainingWithAliveCrystalsAllRH_8GT700MeV_RelEne_onlyCracks_rightTAG_data_BDTG_weights.xml"));
+  desc.add<edm::FileInPath>("bdtWeightFileNoCracks",edm::FileInPath("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/bdtgAllRH_8GT700MeV_noCracks_ZskimData2017_v1.xml"));
+  desc.add<edm::FileInPath>("bdtWeightFileCracks",edm::FileInPath("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/bdtgAllRH_8GT700MeV_onlyCracks_ZskimData2017_v1.xml"));
   {
     std::vector<std::string> temp1;
     temp1.reserve(9);
