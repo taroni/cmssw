@@ -91,4 +91,6 @@ from Configuration.Eras.Modifier_fastSim_cff import fastSim
 fastSim.toModify(ecalRecHit, 
                  killDeadChannels = False,
                  recoverEBFE = False,
-                 recoverEEFE = False)
+                 recoverEEFE = False,
+                 recoverEBIsolatedChannels = False
+                  )
