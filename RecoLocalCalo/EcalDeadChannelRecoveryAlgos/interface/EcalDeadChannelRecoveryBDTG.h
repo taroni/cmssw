@@ -13,8 +13,6 @@
 #include "CommonTools/MVAUtils/interface/TMVAZipReader.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-#include <TTree.h>
-#include "TMVA/Factory.h"
 #include "TMVA/Reader.h"
 
 #include <string>
@@ -27,8 +25,8 @@ template <typename DetIdT> class EcalDeadChannelRecoveryBDTG {
   
   void setParameters(const edm::ParameterSet&ps);
   void setCaloTopology(const CaloTopology *topo );
-  // void setCaloTopology(const CaloTopology *topo,const edm::ParameterSet&ps );
-  double recover(const DetIdT id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut, bool *AcceptFlag);
+
+  double recover(const DetIdT id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut, bool *acceptFlag);
   void loadFile();
 
   TMVA::Reader *readerNoCrack;
@@ -36,14 +34,13 @@ template <typename DetIdT> class EcalDeadChannelRecoveryBDTG {
 
  private:
   const CaloTopology* topology_;
-  edm::ParameterSet ps_;
   struct XtalMatrix {
-    Float_t rEn[9], ieta[9], iphi[9], sumE8;
+    std::array<float, 9> rEn, ieta, iphi;
+    float sumE8;
   };
 
   XtalMatrix mx;
-  long a[301];
-  
+   
   edm::FileInPath bdtWeightFileNoCracks_;
   edm::FileInPath bdtWeightFileCracks_;
 

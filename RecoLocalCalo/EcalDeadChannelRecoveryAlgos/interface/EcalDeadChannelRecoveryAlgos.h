@@ -20,10 +20,10 @@ template <typename DetIdT> class EcalDeadChannelRecoveryAlgos {
   void setCaloTopology(const CaloTopology *topology);
   EcalRecHit correct(const DetIdT id,
                      const EcalRecHitCollection &hit_collection,
-                     std::string algo, double Single8Cut, double Sum8Cut, bool *AccFlag);
+                     std::string algo, double single8Cut, double sum8Cut, bool *accFlag);
 
  private:
   EcalDeadChannelRecoveryNN<DetIdT> nn;
   EcalDeadChannelRecoveryBDTG<DetIdT> bdtg;
 };
-#endif // RecoLocalCalo_EcalDeadChannelRecoveryAlgos_EcalDeadChannelRecoveryAlgos_HH
+#endif

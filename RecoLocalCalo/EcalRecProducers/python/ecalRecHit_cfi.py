@@ -49,7 +49,7 @@ ecalRecHit = cms.EDProducer("EcalRecHitProducer",
                             
     # for channel recovery
     algoRecover = cms.string("EcalRecHitWorkerRecover"),
-    recoverEBIsolatedChannels = cms.bool(True),##default is false
+                            recoverEBIsolatedChannels = cms.bool(True),##default is false
     recoverEEIsolatedChannels = cms.bool(False),
     recoverEBVFE  = cms.bool(False),
     recoverEEVFE  = cms.bool(False),
@@ -72,15 +72,15 @@ ecalRecHit = cms.EDProducer("EcalRecHitProducer",
     #  ~64 GeV is the TP saturation level
     logWarningEtThreshold_EB_FE = cms.double(50),# in EB logWarningThreshold is actually in E (GeV)
     logWarningEtThreshold_EE_FE = cms.double(50),# in EE the energy should correspond to Et (GeV) but the recovered values of energies are not tested if make sense
+    ebDetIdToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:ebDetId"),
+    eeDetIdToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:eeDetId"),
+    ebFEToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:ebFE"),
+    eeFEToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:eeFE"),
     singleChannelRecoveryMethod = cms.string("BDTG"), #default NeuralNetworks
     singleChannelRecoveryThreshold = cms.double(0.70),##default 8
     sum8ChannelRecoveryThreshold = cms.double(0.),##default 8
     bdtWeightFileNoCracks = cms.FileInPath("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/BDTWeights/bdtgAllRH_8GT700MeV_noCracks_ZskimData2017_v1.xml"),
     bdtWeightFileCracks = cms.FileInPath("RecoLocalCalo/EcalDeadChannelRecoveryAlgos/data/BDTWeights/bdtgAllRH_8GT700MeV_onlyCracks_ZskimData2017_v1.xml"),
-    ebDetIdToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:ebDetId"),
-    eeDetIdToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:eeDetId"),
-    ebFEToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:ebFE"),
-    eeFEToBeRecovered = cms.InputTag("ecalDetIdToBeRecovered:eeFE"),
     triggerPrimitiveDigiCollection = cms.InputTag("ecalDigis:EcalTriggerPrimitives"),
     cleaningConfig=cleaningAlgoConfig,
 
