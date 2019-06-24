@@ -24,18 +24,21 @@ void EcalDeadChannelRecoveryBDTG<EBDetId>::loadFile() {
 
   for (int i =0; i< 4; ++i) readerNoCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
   for (int i =5; i< 9; ++i) readerNoCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
-  
+  readerNoCrack->AddVariable("E1+E2+E3+E4+E6+E7+E8+E9" , &(mx_.sumE8) );  
   for (int i =0; i< 9; ++i) readerNoCrack->AddVariable(TString("iEta")+(i+1), &(mx_.ieta[i]));
   for (int i =0; i< 9; ++i) readerNoCrack->AddVariable(TString("iPhi")+(i+1), &(mx_.iphi[i]));
 
 
-  readerCrack = new TMVA::Reader( "!Color:!Silent" );
 
+  readerCrack =  new TMVA::Reader( "!Color:!Silent" );
+ 
   for (int i =0; i< 4; ++i) readerCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
   for (int i =5; i< 9; ++i) readerCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
-  
+  readerCrack->AddVariable("E1+E2+E3+E4+E6+E7+E8+E9" , &(mx_.sumE8) );   
   for (int i =0; i< 9; ++i) readerCrack->AddVariable(TString("iEta")+(i+1), &(mx_.ieta[i]));
   for (int i =0; i< 9; ++i) readerCrack->AddVariable(TString("iPhi")+(i+1), &(mx_.iphi[i]));
+
+ 
 
   reco::details::loadTMVAWeights(readerNoCrack, "BDTG", bdtWeightFileNoCracks_.fullPath());
   reco::details::loadTMVAWeights(readerCrack, "BDTG", bdtWeightFileNoCracks_.fullPath());
@@ -67,13 +70,13 @@ void EcalDeadChannelRecoveryBDTG<EEDetId>::setParameters(const edm::ParameterSet
 }
 
 
-// template <typename DetIdT>  
-// double EcalDeadChannelRecoveryBDTG<EEDetId>::recover(const EEDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *acceptFlag) {
-//   return 0;
-// }
+template <>  
+double EcalDeadChannelRecoveryBDTG<EEDetId>::recover(const EEDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *acceptFlag) {
+  return 0;
+}
 
-template <typename DetIdT>  
-double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const EBDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *acceptFlag) {
+template <>  
+double EcalDeadChannelRecoveryBDTG<EBDetId>::recover(const EBDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *acceptFlag) {
 
   bool isCrack=false;
   int cellIndex=0.;
