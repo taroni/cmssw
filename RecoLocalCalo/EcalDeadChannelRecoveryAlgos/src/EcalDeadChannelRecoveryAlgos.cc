@@ -15,16 +15,16 @@
 
 template <typename T>
 void EcalDeadChannelRecoveryAlgos<T>::setParameters(const edm::ParameterSet&ps) {
-  bdtg.setParameters(ps);
+  bdtg_.setParameters(ps);
 }
 
-  
+
 
 template <typename T>
 void EcalDeadChannelRecoveryAlgos<T>::setCaloTopology(
     const CaloTopology *topo) {
-  nn.setCaloTopology(topo);
-  bdtg.setCaloTopology(topo);
+  nn_.setCaloTopology(topo);
+  bdtg_.setCaloTopology(topo);
 }
 
 
@@ -35,10 +35,10 @@ EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(
   // recover as single dead channel
   double newEnergy = 0.0;
   if (algo == "NeuralNetworks") {
-     newEnergy = this->nn.recover(id, hit_collection, sum8Cut, acceptFlag);
+     newEnergy = this->nn_.recover(id, hit_collection, sum8Cut, acceptFlag);
   }else if (algo=="BDTG"){
     *acceptFlag=false;
-      newEnergy = this->bdtg.recover(id, hit_collection, single8Cut, sum8Cut, acceptFlag); //ADD here
+      newEnergy = this->bdtg_.recover(id, hit_collection, single8Cut, sum8Cut, acceptFlag); //ADD here
      if (newEnergy>0.) *acceptFlag=true; //bdtg set to 0 if there is more than one channel in the matrix that is not reponding
   }else {
     edm::LogError("EcalDeadChannelRecoveryAlgos")

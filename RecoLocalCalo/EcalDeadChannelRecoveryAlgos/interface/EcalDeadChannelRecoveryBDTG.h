@@ -24,26 +24,30 @@ template <typename DetIdT> class EcalDeadChannelRecoveryBDTG {
   ~EcalDeadChannelRecoveryBDTG();
   
   void setParameters(const edm::ParameterSet&ps);
-  void setCaloTopology(const CaloTopology *topo );
-
-  double recover(const DetIdT id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut, bool *acceptFlag);
+  void setCaloTopology(const CaloTopology *topo ) {topology_ = topo;};
+  
+  double recover(const EBDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut, bool *acceptFlag);
+  // double recover(const EEDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut, bool *acceptFlag);
   void loadFile();
 
   TMVA::Reader *readerNoCrack;
   TMVA::Reader *readerCrack;
 
  private:
+
   const CaloTopology* topology_;
   struct XtalMatrix {
     std::array<float, 9> rEn, ieta, iphi;
     float sumE8;
   };
 
-  XtalMatrix mx;
+  XtalMatrix mx_;
    
   edm::FileInPath bdtWeightFileNoCracks_;
   edm::FileInPath bdtWeightFileCracks_;
 
 };
+
+
 
 #endif

@@ -22,20 +22,20 @@ void EcalDeadChannelRecoveryBDTG<EBDetId>::loadFile() {
 
   readerNoCrack = new TMVA::Reader( "!Color:!Silent" );
 
-  for (int i =0; i< 4; ++i) readerNoCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx.rEn[i]));
-  for (int i =5; i< 9; ++i) readerNoCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx.rEn[i]));
+  for (int i =0; i< 4; ++i) readerNoCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
+  for (int i =5; i< 9; ++i) readerNoCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
   
-  for (int i =0; i< 9; ++i) readerNoCrack->AddVariable(TString("iEta")+(i+1), &(mx.ieta[i]));
-  for (int i =0; i< 9; ++i) readerNoCrack->AddVariable(TString("iPhi")+(i+1), &(mx.iphi[i]));
+  for (int i =0; i< 9; ++i) readerNoCrack->AddVariable(TString("iEta")+(i+1), &(mx_.ieta[i]));
+  for (int i =0; i< 9; ++i) readerNoCrack->AddVariable(TString("iPhi")+(i+1), &(mx_.iphi[i]));
 
 
   readerCrack = new TMVA::Reader( "!Color:!Silent" );
 
-  for (int i =0; i< 4; ++i) readerCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx.rEn[i]));
-  for (int i =5; i< 9; ++i) readerCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx.rEn[i]));
+  for (int i =0; i< 4; ++i) readerCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
+  for (int i =5; i< 9; ++i) readerCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
   
-  for (int i =0; i< 9; ++i) readerCrack->AddVariable(TString("iEta")+(i+1), &(mx.ieta[i]));
-  for (int i =0; i< 9; ++i) readerCrack->AddVariable(TString("iPhi")+(i+1), &(mx.iphi[i]));
+  for (int i =0; i< 9; ++i) readerCrack->AddVariable(TString("iEta")+(i+1), &(mx_.ieta[i]));
+  for (int i =0; i< 9; ++i) readerCrack->AddVariable(TString("iPhi")+(i+1), &(mx_.iphi[i]));
 
   reco::details::loadTMVAWeights(readerNoCrack, "BDTG", bdtWeightFileNoCracks_.fullPath());
   reco::details::loadTMVAWeights(readerCrack, "BDTG", bdtWeightFileNoCracks_.fullPath());
@@ -56,8 +56,6 @@ void EcalDeadChannelRecoveryBDTG<EBDetId>::setParameters(const edm::ParameterSet
   bdtWeightFileNoCracks_ = ps.getParameter<edm::FileInPath>("bdtWeightFileNoCracks");
   bdtWeightFileCracks_ = ps.getParameter<edm::FileInPath>("bdtWeightFileCracks");
   this->loadFile();
-  
-
 
 }
 
@@ -69,25 +67,13 @@ void EcalDeadChannelRecoveryBDTG<EEDetId>::setParameters(const edm::ParameterSet
 }
 
 
-
-
-template <>
-void EcalDeadChannelRecoveryBDTG<EEDetId>::setCaloTopology(const CaloTopology  *topo)
-{
-  topology_ = topo;
-
-}
-
-template <>
-void EcalDeadChannelRecoveryBDTG<EBDetId>::setCaloTopology(const CaloTopology  *topo)
-{
-  topology_ = topo;
-
-}
-
+// template <typename DetIdT>  
+// double EcalDeadChannelRecoveryBDTG<EEDetId>::recover(const EEDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *acceptFlag) {
+//   return 0;
+// }
 
 template <typename DetIdT>  
-double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *acceptFlag) {
+double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const EBDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *acceptFlag) {
 
   bool isCrack=false;
   int cellIndex=0.;
@@ -107,7 +93,7 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
  
 
   for (auto const& theCells : m3x3aroundDC) {
-    EBDetId cell = DetIdT(theCells);
+    EBDetId cell = EBDetId(theCells);
     if (cell==id) {
       int iEtaCentral = cell.ieta();
       int iPhiCentral = cell.iphi();
@@ -131,13 +117,13 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
 	    return 0.;
 	  }else{
 	    neighTotEn+=goS_it->energy();
-	    mx.rEn[cellIndex]=goS_it->energy();
-	    mx.iphi[cellIndex]=cell.iphi();
-	    mx.ieta[cellIndex]=cell.ieta();
+	    mx_.rEn[cellIndex]=goS_it->energy();
+	    mx_.iphi[cellIndex]=cell.iphi();
+	    mx_.ieta[cellIndex]=cell.ieta();
 	    cellIndex++;
 	  }
        	} else { // the cell is the central one
-	  mx.rEn[cellIndex]=0;
+	  mx_.rEn[cellIndex]=0;
 	  cellIndex++;
 	}
       } else { //goS_it is not in the rechitcollection
@@ -151,12 +137,12 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
   }
   if ( cellIndex>=0 && neighTotEn>=single8Cut*8. && neighTotEn >=sum8Cut){
     bool allneighs=true;
-    mx.sumE8=neighTotEn;
+    mx_.sumE8=neighTotEn;
     for (unsigned int icell=0; icell<9 ; icell++){
-      if (mx.rEn[icell]<single8Cut && icell!=4){
+      if (mx_.rEn[icell]<single8Cut && icell!=4){
 	allneighs=false;
       }
-      mx.rEn[icell]=mx.rEn[icell]/neighTotEn;
+      mx_.rEn[icell]=mx_.rEn[icell]/neighTotEn;
     } 
     if (allneighs==true){
       // evaluate the regression 
@@ -181,4 +167,4 @@ double EcalDeadChannelRecoveryBDTG<DetIdT>::recover(const DetIdT id, const EcalR
 }
 
 template class EcalDeadChannelRecoveryBDTG<EBDetId>;
-template class EcalDeadChannelRecoveryBDTG<EEDetId>; //not used. Needed to make EcalDeadChannelRecoveryAlgos compile
+template class EcalDeadChannelRecoveryBDTG<EEDetId>; //not used.

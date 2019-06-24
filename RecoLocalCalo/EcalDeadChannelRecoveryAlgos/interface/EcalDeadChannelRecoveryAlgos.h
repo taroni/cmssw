@@ -23,7 +23,7 @@ template <typename DetIdT> class EcalDeadChannelRecoveryAlgos {
                      std::string algo, double single8Cut, double sum8Cut, bool *accFlag);
 
  private:
-  EcalDeadChannelRecoveryNN<DetIdT> nn;
-  EcalDeadChannelRecoveryBDTG<DetIdT> bdtg;
+  EcalDeadChannelRecoveryNN<DetIdT> nn_;
+  EcalDeadChannelRecoveryBDTG<DetIdT> bdtg_;
 };
 #endif
