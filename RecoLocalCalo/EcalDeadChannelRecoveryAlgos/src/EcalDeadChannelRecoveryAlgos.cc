@@ -48,6 +48,7 @@ EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(
 
   uint32_t flag = 0;
   return EcalRecHit(id, newEnergy, 0, flag);
+
 }
 
 template class EcalDeadChannelRecoveryAlgos<EBDetId>;

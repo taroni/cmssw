@@ -138,7 +138,7 @@ double EcalDeadChannelRecoveryBDTG<EBDetId>::recover(const EBDetId id, const Eca
       return 0.;
     }
   }
-  if ( cellIndex>=0 && neighTotEn>=single8Cut*8. && neighTotEn >=sum8Cut){
+  if ( cellIndex>0 && neighTotEn>=single8Cut*8. && neighTotEn >=sum8Cut){
     bool allneighs=true;
     mx_.sumE8=neighTotEn;
     for (unsigned int icell=0; icell<9 ; icell++){
