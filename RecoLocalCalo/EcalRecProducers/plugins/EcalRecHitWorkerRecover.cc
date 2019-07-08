@@ -20,6 +20,8 @@
 
 EcalRecHitWorkerRecover::EcalRecHitWorkerRecover(const edm::ParameterSet& ps, edm::ConsumesCollector& c)
     : EcalRecHitWorkerBaseClass(ps, c) {
+
+
   rechitMaker_ = std::make_unique<EcalRecHitSimpleAlgo>();
   // isolated channel recovery
   singleRecoveryMethod_ = ps.getParameter<std::string>("singleChannelRecoveryMethod");
@@ -40,6 +42,9 @@ EcalRecHitWorkerRecover::EcalRecHitWorkerRecover(const edm::ParameterSet& ps, ed
 
   tpDigiToken_ =
       c.consumes<EcalTrigPrimDigiCollection>(ps.getParameter<edm::InputTag>("triggerPrimitiveDigiCollection"));
+
+  ebDeadChannelCorrector.setParameters(ps);
+
 }
 
 void EcalRecHitWorkerRecover::set(const edm::EventSetup& es) {
@@ -121,11 +126,12 @@ bool EcalRecHitWorkerRecover::run(const edm::Event& evt,
   if (flags == EcalRecHitWorkerRecover::EB_single) {
     // recover as single dead channel
     ebDeadChannelCorrector.setCaloTopology(caloTopology_.product());
+ 
 
     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE
     bool AcceptRecHit = true;
-    EcalRecHit hit =
-        ebDeadChannelCorrector.correct(detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, &AcceptRecHit);
+    EcalRecHit hit =  ebDeadChannelCorrector.correct( detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, sum8RecoveryThreshold_, &AcceptRecHit);
+      
 
     if (hit.energy() != 0 and AcceptRecHit == true) {
       hit.setFlag(EcalRecHit::kNeighboursRecovered);
@@ -138,11 +144,13 @@ bool EcalRecHitWorkerRecover::run(const edm::Event& evt,
   } else if (flags == EcalRecHitWorkerRecover::EE_single) {
     // recover as single dead channel
     eeDeadChannelCorrector.setCaloTopology(caloTopology_.product());
+    
 
     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE
     bool AcceptRecHit = true;
-    EcalRecHit hit =
-        eeDeadChannelCorrector.correct(detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, &AcceptRecHit);
+    EcalRecHit hit = 
+      eeDeadChannelCorrector.correct( detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, sum8RecoveryThreshold_, &AcceptRecHit);
+
     if (hit.energy() != 0 and AcceptRecHit == true) {
       hit.setFlag(EcalRecHit::kNeighboursRecovered);
     } else {
