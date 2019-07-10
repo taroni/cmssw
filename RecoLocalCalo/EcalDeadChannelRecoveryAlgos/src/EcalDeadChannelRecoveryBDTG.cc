@@ -10,7 +10,6 @@
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h" // can I use a egammatools here?
 #include "FWCore/ParameterSet/interface/FileInPath.h"
 #include <iostream>
-#include <TMath.h>
 
 #include<iostream>
 #include<ostream>
@@ -21,24 +20,26 @@ template <>
 void EcalDeadChannelRecoveryBDTG<EBDetId>::loadFile() {
 
   readerNoCrack = new TMVA::Reader( "!Color:!Silent" );
-
-  for (int i =0; i< 4; ++i) readerNoCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
-  for (int i =5; i< 9; ++i) readerNoCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
-  readerNoCrack->AddVariable("E1+E2+E3+E4+E6+E7+E8+E9" , &(mx_.sumE8) );  
-  for (int i =0; i< 9; ++i) readerNoCrack->AddVariable(TString("iEta")+(i+1), &(mx_.ieta[i]));
-  for (int i =0; i< 9; ++i) readerNoCrack->AddVariable(TString("iPhi")+(i+1), &(mx_.iphi[i]));
-
-
-
   readerCrack =  new TMVA::Reader( "!Color:!Silent" );
- 
-  for (int i =0; i< 4; ++i) readerCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
-  for (int i =5; i< 9; ++i) readerCrack->AddVariable(TString("E")+(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
+  for (int i =0; i< 9; ++i) {
+    if(i==4) continue;
+    readerNoCrack->AddVariable("E"+std::to_string(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
+    readerNoCrack->AddVariable("E"+std::to_string(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
+    readerCrack->AddVariable("E"+std::to_string(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
+    readerCrack->AddVariable("E"+std::to_string(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
+  }
+  readerNoCrack->AddVariable("E1+E2+E3+E4+E6+E7+E8+E9" , &(mx_.sumE8) );  
   readerCrack->AddVariable("E1+E2+E3+E4+E6+E7+E8+E9" , &(mx_.sumE8) );   
-  for (int i =0; i< 9; ++i) readerCrack->AddVariable(TString("iEta")+(i+1), &(mx_.ieta[i]));
-  for (int i =0; i< 9; ++i) readerCrack->AddVariable(TString("iPhi")+(i+1), &(mx_.iphi[i]));
 
- 
+  for (int i =0; i< 9; ++i) {
+    readerNoCrack->AddVariable("iEta"+std::to_string(i+1), &(mx_.ieta[i]));
+    readerCrack->AddVariable("iEta"+std::to_string(i+1), &(mx_.ieta[i]));
+  }
+  for (int i =0; i< 9; ++i) {
+    readerNoCrack->AddVariable("iPhi"+std::to_string(i+1), &(mx_.iphi[i]));
+    readerCrack->AddVariable("iPhi"+std::to_string(i+1), &(mx_.iphi[i]));
+  }
+
 
   reco::details::loadTMVAWeights(readerNoCrack, "BDTG", bdtWeightFileNoCracks_.fullPath());
   reco::details::loadTMVAWeights(readerCrack, "BDTG", bdtWeightFileNoCracks_.fullPath());
@@ -98,24 +99,24 @@ double EcalDeadChannelRecoveryBDTG<EBDetId>::recover(const EBDetId id, const Eca
   for (auto const& theCells : m3x3aroundDC) {
     EBDetId cell = EBDetId(theCells);
     if (cell==id) {
-      int iEtaCentral = cell.ieta();
+      int iEtaCentral = std::abs(cell.ieta());
       int iPhiCentral = cell.iphi();
 
-      if( std::abs(iEtaCentral) < 2 || 
-	  std::abs(iEtaCentral - 25) < 2 || std::abs(iEtaCentral + 25) < 2 ||
-	  std::abs(iEtaCentral - 45) < 2 || std::abs(iEtaCentral + 45) < 2 ||
-	  std::abs(iEtaCentral - 65) < 2 || std::abs(iEtaCentral + 65) < 2 ||
-	  std::abs(iEtaCentral) > 83    ||
+      if( iEtaCentral < 2 || 
+	  std::abs(iEtaCentral - 25) < 2 ||
+	  std::abs(iEtaCentral - 45) < 2 ||
+	  std::abs(iEtaCentral - 65) < 2 ||
+	  iEtaCentral > 83    ||
 	   (int(iPhiCentral+0.5)%20 ==0)
 	   )  isCrack=true;
 
     }
-    if (bool(cell.null())==false) {
+    if (!cell.null()){
       EcalRecHitCollection::const_iterator goS_it = hit_collection.find(cell);
       if ( goS_it!=hit_collection.end() ){
 	//keep the en, iphi, ieta of xtals of the matrix
 	if ( cell!=id ) {	
-	  if (goS_it->energy()<=0. || goS_it->energy()<single8Cut) {
+	  if ( goS_it->energy()<single8Cut) {
 	    *acceptFlag=false;
 	    return 0.;
 	  }else{
