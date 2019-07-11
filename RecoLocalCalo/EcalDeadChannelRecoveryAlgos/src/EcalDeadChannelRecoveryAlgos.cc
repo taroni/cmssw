@@ -21,10 +21,14 @@ void EcalDeadChannelRecoveryAlgos<T>::setParameters(const edm::ParameterSet&ps) 
 
 
 template <typename T>
-void EcalDeadChannelRecoveryAlgos<T>::setCaloTopology(
+void EcalDeadChannelRecoveryAlgos<T>::setCaloTopology( std::string algo, 
     const CaloTopology *topo) {
-  nn_.setCaloTopology(topo);
-  bdtg_.setCaloTopology(topo);
+  if (algo=="BDTG"){
+    bdtg_.setCaloTopology(topo);
+  }else{
+    nn_.setCaloTopology(topo);
+  }
+
 }
 
 
@@ -35,6 +39,7 @@ EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(
   // recover as single dead channel
   double newEnergy = 0.0;
   if (algo == "NeuralNetworks") {
+    
      newEnergy = this->nn_.recover(id, hit_collection, sum8Cut, acceptFlag);
   }else if (algo=="BDTG"){
     *acceptFlag=false;

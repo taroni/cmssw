@@ -70,7 +70,7 @@ void EcalDeadChannelRecoveryProducers<DetIdT>::produce(
   // create a unique_ptr to a EcalRecHitCollection, copy the RecHits into it and
   // put it in the Event:
   auto redCollection = std::make_unique<EcalRecHitCollection>();
-  deadChannelCorrector.setCaloTopology(theCaloTopology.product());
+  deadChannelCorrector.setCaloTopology(CorrectionMethod_, theCaloTopology.product());
 
   //
   //  Double loop over EcalRecHit collection and "dead" cell RecHits.

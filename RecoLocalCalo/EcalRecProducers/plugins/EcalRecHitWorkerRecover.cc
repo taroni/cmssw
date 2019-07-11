@@ -26,6 +26,7 @@ EcalRecHitWorkerRecover::EcalRecHitWorkerRecover(const edm::ParameterSet& ps, ed
   // isolated channel recovery
   singleRecoveryMethod_ = ps.getParameter<std::string>("singleChannelRecoveryMethod");
   singleRecoveryThreshold_ = ps.getParameter<double>("singleChannelRecoveryThreshold");
+  sum8RecoveryThreshold_ = ps.getParameter<double>("sum8ChannelRecoveryThreshold");
   killDeadChannels_ = ps.getParameter<bool>("killDeadChannels");
   recoverEBIsolatedChannels_ = ps.getParameter<bool>("recoverEBIsolatedChannels");
   recoverEEIsolatedChannels_ = ps.getParameter<bool>("recoverEEIsolatedChannels");
@@ -43,7 +44,8 @@ EcalRecHitWorkerRecover::EcalRecHitWorkerRecover(const edm::ParameterSet& ps, ed
   tpDigiToken_ =
       c.consumes<EcalTrigPrimDigiCollection>(ps.getParameter<edm::InputTag>("triggerPrimitiveDigiCollection"));
 
-  ebDeadChannelCorrector.setParameters(ps);
+  if (recoverEBIsolatedChannels_ && singleRecoveryMethod_=="BDTG")
+    ebDeadChannelCorrector.setParameters(ps);
 
 }
 
@@ -125,7 +127,7 @@ bool EcalRecHitWorkerRecover::run(const edm::Event& evt,
 
   if (flags == EcalRecHitWorkerRecover::EB_single) {
     // recover as single dead channel
-    ebDeadChannelCorrector.setCaloTopology(caloTopology_.product());
+    ebDeadChannelCorrector.setCaloTopology( singleRecoveryMethod_, caloTopology_.product());
  
 
     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE
@@ -143,7 +145,7 @@ bool EcalRecHitWorkerRecover::run(const edm::Event& evt,
 
   } else if (flags == EcalRecHitWorkerRecover::EE_single) {
     // recover as single dead channel
-    eeDeadChannelCorrector.setCaloTopology(caloTopology_.product());
+    eeDeadChannelCorrector.setCaloTopology(singleRecoveryMethod_, caloTopology_.product());
     
 
     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE

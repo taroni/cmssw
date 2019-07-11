@@ -29,6 +29,7 @@ template <typename DetIdT> class EcalDeadChannelRecoveryBDTG {
   double recover(const DetIdT id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut, bool *acceptFlag);
 
   void loadFile();
+  void addVariables(TMVA::Reader* reader);
    
  private:
 
