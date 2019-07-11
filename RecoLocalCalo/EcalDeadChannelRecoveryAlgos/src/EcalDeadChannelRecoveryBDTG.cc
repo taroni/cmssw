@@ -78,8 +78,7 @@ double EcalDeadChannelRecoveryBDTG<EEDetId>::recover(const EEDetId id, const Eca
 template <>  
 double EcalDeadChannelRecoveryBDTG<EBDetId>::recover(const EBDetId id, const EcalRecHitCollection &hit_collection, double single8Cut, double sum8Cut,  bool *acceptFlag) {
 
-  std::cout << __LINE__ << " SUM8 THRESHOLD " << sum8Cut << std::endl; 
-  bool isCrack=false;
+    bool isCrack=false;
   int cellIndex=0.;
   double neighTotEn=0.;
   float val =0. ;
