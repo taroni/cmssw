@@ -9,7 +9,6 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSetDescription.h"
 
-//#include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryNN.h"
 #include "RecoLocalCalo/EcalDeadChannelRecoveryAlgos/interface/EcalDeadChannelRecoveryBDTG.h"
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
@@ -23,7 +22,6 @@ template <typename DetIdT> class EcalDeadChannelRecoveryAlgos {
                      std::string algo, double single8Cut, double sum8Cut, bool *accFlag);
 
  private:
-  //EcalDeadChannelRecoveryNN<DetIdT> nn_;
   EcalDeadChannelRecoveryBDTG<DetIdT> bdtg_;
 };
 #endif
