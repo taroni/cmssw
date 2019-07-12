@@ -23,11 +23,9 @@ void EcalDeadChannelRecoveryBDTG<EBDetId>::addVariables(TMVA::Reader * reader){
     reader->AddVariable("E"+std::to_string(i+1)+"/(E1+E2+E3+E4+E6+E7+E8+E9)", &(mx_.rEn[i]));
   }
   reader->AddVariable("E1+E2+E3+E4+E6+E7+E8+E9" , &(mx_.sumE8) );  
-  for (int i =0; i< 9; ++i) {
-    reader->AddVariable("iEta"+std::to_string(i+1), &(mx_.ieta[i]));
-    reader->AddVariable("iPhi"+std::to_string(i+1), &(mx_.iphi[i]));
-  }
-
+  for (int i =0; i< 9; ++i)reader->AddVariable("iEta"+std::to_string(i+1), &(mx_.ieta[i]));
+  for (int i =0; i< 9; ++i)reader->AddVariable("iPhi"+std::to_string(i+1), &(mx_.iphi[i]));
+  
 }
 template <>
 void EcalDeadChannelRecoveryBDTG<EBDetId>::loadFile() {
@@ -36,7 +34,7 @@ void EcalDeadChannelRecoveryBDTG<EBDetId>::loadFile() {
   
   this->addVariables(readerNoCrack); 
   this->addVariables(readerCrack); 
-   
+
   reco::details::loadTMVAWeights(readerNoCrack, "BDTG", bdtWeightFileNoCracks_.fullPath());
   reco::details::loadTMVAWeights(readerCrack, "BDTG", bdtWeightFileCracks_.fullPath());
 }
