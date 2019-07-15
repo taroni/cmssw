@@ -67,7 +67,8 @@ void EcalDeadChannelRecoveryProducers<DetIdT>::produce(edm::Event& evt, const ed
   // create a unique_ptr to a EcalRecHitCollection, copy the RecHits into it and
   // put it in the Event:
   auto redCollection = std::make_unique<EcalRecHitCollection>();
-  deadChannelCorrector.setCaloTopology(theCaloTopology.product());
+  std::string dummy;
+  deadChannelCorrector.setCaloTopology(dummy, theCaloTopology.product());
 
   //
   //  Double loop over EcalRecHit collection and "dead" cell RecHits.
@@ -80,8 +81,9 @@ void EcalDeadChannelRecoveryProducers<DetIdT>::produce(edm::Event& evt, const ed
       if (it->detid() == *CheckDead) {
         OverADeadRecHit = true;
         bool AcceptRecHit = true;
+        float dummy=0;
         EcalRecHit hit = deadChannelCorrector.correct(
-            it->detid(), *hit_collection, CorrectionMethod_, Sum8GeVThreshold_, &AcceptRecHit);
+						      it->detid(), *hit_collection, CorrectionMethod_, Sum8GeVThreshold_, dummy, &AcceptRecHit);
 
         if (hit.energy() != 0 and AcceptRecHit == true) {
           hit.setFlag(EcalRecHit::kNeighboursRecovered);
