@@ -13,15 +13,19 @@
 
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 
-template <typename DetIdT> class EcalDeadChannelRecoveryAlgos {
- public:
-  void setParameters(const edm::ParameterSet&ps);
+template <typename DetIdT>
+class EcalDeadChannelRecoveryAlgos {
+public:
+  void setParameters(const edm::ParameterSet &ps);
   void setCaloTopology(std::string algo, const CaloTopology *topology);
   EcalRecHit correct(const DetIdT id,
                      const EcalRecHitCollection &hit_collection,
-                     std::string algo, double single8Cut, double sum8Cut, bool *accFlag);
+                     std::string algo,
+                     double single8Cut,
+                     double sum8Cut,
+                     bool *accFlag);
 
- private:
+private:
   EcalDeadChannelRecoveryBDTG<DetIdT> bdtg_;
 };
 #endif

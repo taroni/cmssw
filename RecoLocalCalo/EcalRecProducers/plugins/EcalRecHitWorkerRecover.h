@@ -89,8 +89,6 @@ protected:
 
   EcalDeadChannelRecoveryAlgos<EBDetId> ebDeadChannelCorrector;
   EcalDeadChannelRecoveryAlgos<EEDetId> eeDeadChannelCorrector;
-  
- 
 };
 
 #endif

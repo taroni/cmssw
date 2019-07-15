@@ -14,38 +14,36 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
 template <typename T>
-void EcalDeadChannelRecoveryAlgos<T>::setParameters(const edm::ParameterSet&ps) {
+void EcalDeadChannelRecoveryAlgos<T>::setParameters(const edm::ParameterSet &ps) {
   bdtg_.setParameters(ps);
 }
 
-
-
 template <typename T>
-void EcalDeadChannelRecoveryAlgos<T>::setCaloTopology( std::string algo, 
-    const CaloTopology *topo) {
+void EcalDeadChannelRecoveryAlgos<T>::setCaloTopology(std::string algo, const CaloTopology *topo) {
   bdtg_.setCaloTopology(topo);
 }
 
-
 template <typename T>
-EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(
-    const T id, const EcalRecHitCollection &hit_collection, std::string algo,
-    double single8Cut, double sum8Cut,  bool *acceptFlag) {
+EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(const T id,
+                                                    const EcalRecHitCollection &hit_collection,
+                                                    std::string algo,
+                                                    double single8Cut,
+                                                    double sum8Cut,
+                                                    bool *acceptFlag) {
   // recover as single dead channel
   double newEnergy = 0.0;
-  if (algo=="BDTG"){
-    *acceptFlag=false;
-    newEnergy = this->bdtg_.recover(id, hit_collection, single8Cut, sum8Cut, acceptFlag); //ADD here
-    if (newEnergy>0.) *acceptFlag=true; //bdtg set to 0 if there is more than one channel in the matrix that is not reponding
-  }else {
-    edm::LogError("EcalDeadChannelRecoveryAlgos")
-      << "Invalid algorithm for dead channel recovery.";
+  if (algo == "BDTG") {
+    *acceptFlag = false;
+    newEnergy = this->bdtg_.recover(id, hit_collection, single8Cut, sum8Cut, acceptFlag);  //ADD here
+    if (newEnergy > 0.)
+      *acceptFlag = true;  //bdtg set to 0 if there is more than one channel in the matrix that is not reponding
+  } else {
+    edm::LogError("EcalDeadChannelRecoveryAlgos") << "Invalid algorithm for dead channel recovery.";
     *acceptFlag = false;
   }
-  
+
   uint32_t flag = 0;
   return EcalRecHit(id, newEnergy, 0, flag);
-
 }
 
 template class EcalDeadChannelRecoveryAlgos<EBDetId>;
