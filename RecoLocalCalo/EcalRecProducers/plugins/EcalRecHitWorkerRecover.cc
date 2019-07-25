@@ -128,8 +128,9 @@ bool EcalRecHitWorkerRecover::run(const edm::Event& evt,
 
     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE
     bool AcceptRecHit = true;
-    EcalRecHit hit = ebDeadChannelCorrector.correct(
+    float ebEn = ebDeadChannelCorrector.correct(
         detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, sum8RecoveryThreshold_, &AcceptRecHit);
+    EcalRecHit hit(detId, ebEn, 0., EcalRecHit::kDead);
 
     if (hit.energy() != 0 and AcceptRecHit == true) {
       hit.setFlag(EcalRecHit::kNeighboursRecovered);
@@ -145,9 +146,9 @@ bool EcalRecHitWorkerRecover::run(const edm::Event& evt,
 
     // channel recovery. Accepted new RecHit has the flag AcceptRecHit=TRUE
     bool AcceptRecHit = true;
-    EcalRecHit hit = eeDeadChannelCorrector.correct(
+    float eeEn = eeDeadChannelCorrector.correct(
         detId, result, singleRecoveryMethod_, singleRecoveryThreshold_, sum8RecoveryThreshold_, &AcceptRecHit);
-
+    EcalRecHit hit(detId, eeEn, 0., EcalRecHit::kDead);
     if (hit.energy() != 0 and AcceptRecHit == true) {
       hit.setFlag(EcalRecHit::kNeighboursRecovered);
     } else {

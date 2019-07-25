@@ -24,7 +24,7 @@ void EcalDeadChannelRecoveryAlgos<T>::setCaloTopology(std::string algo, const Ca
 }
 
 template <typename T>
-EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(const T id,
+float EcalDeadChannelRecoveryAlgos<T>::correct(const T id,
                                                     const EcalRecHitCollection &hit_collection,
                                                     std::string algo,
                                                     double single8Cut,
@@ -42,8 +42,7 @@ EcalRecHit EcalDeadChannelRecoveryAlgos<T>::correct(const T id,
     *acceptFlag = false;
   }
 
-  uint32_t flag = 0;
-  return EcalRecHit(id, newEnergy, 0, flag);
+  return  newEnergy;
 }
 
 template class EcalDeadChannelRecoveryAlgos<EBDetId>;

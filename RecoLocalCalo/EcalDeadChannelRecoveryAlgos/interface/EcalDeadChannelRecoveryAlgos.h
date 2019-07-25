@@ -18,7 +18,7 @@ class EcalDeadChannelRecoveryAlgos {
 public:
   void setParameters(const edm::ParameterSet &ps);
   void setCaloTopology(std::string algo, const CaloTopology *topology);
-  EcalRecHit correct(const DetIdT id,
+  float correct(const DetIdT id,
                      const EcalRecHitCollection &hit_collection,
                      std::string algo,
                      double single8Cut,
