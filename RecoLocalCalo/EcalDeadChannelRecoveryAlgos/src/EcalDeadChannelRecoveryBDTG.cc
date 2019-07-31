@@ -30,14 +30,14 @@ void EcalDeadChannelRecoveryBDTG<EBDetId>::addVariables(TMVA::Reader *reader) {
 }
 template <>
 void EcalDeadChannelRecoveryBDTG<EBDetId>::loadFile() {
-  readerNoCrack = new TMVA::Reader("!Color:!Silent");
-  readerCrack = new TMVA::Reader("!Color:!Silent");
+  readerNoCrack = std::unique_ptr<TMVA::Reader> (new TMVA::Reader("!Color:!Silent"));
+  readerCrack = std::unique_ptr<TMVA::Reader> (new TMVA::Reader("!Color:!Silent"));
 
-  this->addVariables(readerNoCrack);
-  this->addVariables(readerCrack);
+  this->addVariables(readerNoCrack.get());
+  this->addVariables(readerCrack.get());
 
-  reco::details::loadTMVAWeights(readerNoCrack, "BDTG", bdtWeightFileNoCracks_.fullPath());
-  reco::details::loadTMVAWeights(readerCrack, "BDTG", bdtWeightFileCracks_.fullPath());
+  reco::details::loadTMVAWeights(readerNoCrack.get(), "BDTG", bdtWeightFileNoCracks_.fullPath());
+  reco::details::loadTMVAWeights(readerCrack.get(), "BDTG", bdtWeightFileCracks_.fullPath());
 }
 
 template <typename T>

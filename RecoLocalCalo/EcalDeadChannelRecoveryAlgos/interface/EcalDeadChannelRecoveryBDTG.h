@@ -45,8 +45,8 @@ private:
   edm::FileInPath bdtWeightFileNoCracks_;
   edm::FileInPath bdtWeightFileCracks_;
 
-  TMVA::Reader *readerNoCrack;
-  TMVA::Reader *readerCrack;
+  std::unique_ptr<TMVA::Reader> readerNoCrack;
+  std::unique_ptr<TMVA::Reader> readerCrack;
 };
 
 #endif
